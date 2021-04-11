@@ -1,0 +1,143 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  SberData types
+
+
+node_types:
+
+  sbrf.nodes.WebApplication.sdps:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      rhidm_tosca_server_uuid:
+        type: string
+        required: true
+      ipaserver_ip_addresses:
+        type: string
+        required: true
+      ipaadmin_password:
+        type: string
+        required: true
+      ipaadmin_principal:
+        type: string
+        required: true
+      sdp_master:
+        type: boolean
+        required: true
+    attributes:
+      output_tosca_ambari_ui:
+        type: string
+      output_tosca_jh_ui:
+        type: string
+    interfaces:
+      Standard:
+        create:
+          implementation: sandbox/sdp/sdp_install
+          inputs: {}
+
+  sbrf.nodes.WebApplication.rhidm:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      ipaserver_ip_addresses:
+        type: string
+        required: true
+      ipaadmin_password:
+        type: string
+        required: true
+      ipaadmin_principal:
+        type: string
+        required: true
+    attributes:
+      output_tosca_IAM_RHIDM_Host:
+        type: string
+    interfaces:
+      Standard:
+        create:
+          implementation: sandbox/iam/ipa_install
+          inputs: {}
+
+  sbrf.nodes.WebApplication.keycloak:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      ipaserver_ip_addresses:
+        type: string
+        required: true
+      ipaadmin_password:
+        type: string
+        required: true
+      ipaadmin_principal:
+        type: string
+        required: true
+    interfaces:
+      Standard:
+        create:
+          implementation: sandbox/iam/keycloak_install
+          inputs: {}
+
+  sbrf.nodes.WebApplication.ranger:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      ipaserver_ip_addresses:
+        type: string
+        required: true
+      ipaadmin_password:
+        type: string
+        required: true
+      ipaadmin_principal:
+        type: string
+        required: true
+    interfaces:
+      Standard:
+        create:
+          implementation: sandbox/iam/ranger_install
+          inputs: {}
+
+  sbrf.nodes.WebApplication.etl:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      ipaserver_ip_addresses:
+        type: string
+        required: true
+      ipaadmin_password:
+        type: string
+        required: true
+      ipaadmin_principal:
+        type: string
+        required: true
+    attributes:
+      output_tosca_etl_ui:
+        type: string
+    interfaces:
+      Standard:
+        create:
+          implementation: sandbox/etl/etl_install
+          inputs: {}
+
+  sbrf.nodes.WebApplication.sdct_greenplum:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      gp_master_ip:
+        type: string
+        required: true
+      ipa_server_ip:
+        type: string
+        required: true
+      ipaadmin_password:
+        type: string
+        required: true
+      ipaadmin_principal:
+        type: string
+        required: true
+      sdct_node_type:
+        type: string
+        required: true
+    attributes:
+      output_tosca_GP_Master_Node:
+        type: string
+      output_tosca_SDCT_Product_Info:
+        type: string
+    interfaces:
+      Standard:
+        create:
+          implementation: greenplum/greenplum_install
+          inputs: {}

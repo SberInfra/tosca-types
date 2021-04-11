@@ -1,0 +1,18 @@
+server_ip:
+  description: IP адрес сервера
+  value: { get_attribute: [linux_server, tosca_server_ip] }
+server_mgmt_ip:
+  description: Mgmt IP адрес сервера
+  value: { get_attribute: [linux_server, tosca_server_mgmt_ip] }
+vm_id:
+  description: Идентификатор сервера на платформе
+  value: { get_attribute: [linux_server, tosca_server_uuid] }
+fqdn:
+  description: Идентификатор сервера на платформе
+  value: { get_attribute: [linux_server, tosca_server_fqdn] }
+macaddress:
+  description: Mac address
+  value: { get_attribute: [linux_server, tosca_mac] }
+cluster_name:
+  description: Имя кластера
+  value: { get_attribute: [haproxy, cluster_name] }

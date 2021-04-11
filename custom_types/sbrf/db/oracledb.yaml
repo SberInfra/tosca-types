@@ -1,0 +1,153 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an Oracle Database with custom properties.
+
+node_types:
+
+  sbrf.nodes.DBMS.Oracle:
+    derived_from: tosca.nodes.DBMS
+    properties:
+      version:
+        required: true
+        type: version
+        constraints:
+          - valid_values: [19, 18, 12.2, 12.1]
+      net_segment:
+        type: string
+        required: true
+    attributes:
+      oracle_psu_version:
+        type: string
+    interfaces:
+      Standard:
+        create: oracle_dbms
+
+  sbrf.nodes.Database.Oracle:
+    derived_from: tosca.nodes.Database
+    properties:
+      net_segment:
+        type: string
+        required: true
+      version:
+        required: true
+        type: version
+        constraints:
+        - valid_values: [19, 18, 12.2, 12.1]
+      sid:
+        required: true
+        type: string
+        constraints:
+          - pattern: ^[a-z]{1}[a-z0-9]{2,7}$
+      characterset:
+        required: false
+        type: string
+        default: AL32UTF8
+        constraints:
+          - valid_values: [AL32UTF8, CL8MSWIN1251, CL8ISO8859P5, RU8PC866]
+      nationalcharacterset:
+        required: false
+        type: string
+        default: AL16UTF16
+        constraints:
+          - valid_values: [AL16UTF16, UTF8]
+      archivelog_mode:
+        required: false
+        type: string
+        default: ARCHIVELOG
+        constraints:
+        - valid_values: [ARCHIVELOG, NOARCHIVELOG]
+      wallet:
+        required: false
+        type: boolean
+        default: false
+      tablespaces:
+        required: false
+        type: list
+        entry_schema:
+          type: sbrf.datatypes.Database.Oracle.tablespaces
+      oracle_db_user:
+        required: false
+        type: string
+        default: admapp
+      oracle_db_password:
+        required: false
+        type: string
+        uitype: password
+        default: Oracle123456789
+        constraints:
+          - pattern: ^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{12,}$
+    attributes:
+      db_connect_string:
+        type: string
+    interfaces:
+      Standard:
+        create: oracle_db
+
+  sbrf.nodes.Database.OracleConfig:
+    derived_from: tosca.nodes.Database
+    properties:
+      net_segment:
+        type: string
+        required: true
+      version:
+        required: true
+        type: version
+        constraints:
+        - valid_values: [19, 18, 12.2, 12.1]
+      sid:
+        required: true
+        type: string
+        constraints:
+          - pattern: ^[a-z]{1}[a-z0-9]{2,7}$
+      oracle_db_user:
+        required: false
+        type: string
+        default: admapp
+      cloud_mandatory:
+        type: boolean
+        default: true
+      collect_mandatory:
+        type: boolean
+        default: true
+    attributes:
+      cloud_connected:
+        type: string
+      collect_connected:
+        type: string
+    interfaces:
+      Standard:
+        create: oracle_config
+        delete: oracle_deconfig
+      Maintenance:
+        start:
+          implementation: ansible:oracle_power_state
+          serializer: tasks.plugins.python.power_management.power_management_serializer.PowerManagementSerializer
+          inputs: {}
+        stop:
+          implementation: ansible:oracle_power_state
+          serializer: tasks.plugins.python.power_management.power_management_serializer.PowerManagementSerializer
+          inputs: {}
+      Registry:
+        hpsm:
+          implementation: ansible:oracle_hpsm
+          serializer: tasks.plugins.python.hpsm.hpsm_serializer.HPSMSerializer
+          inputs: {}
+
+data_types:
+
+  sbrf.datatypes.Database.Oracle.tablespaces:
+    derived_from: tosca.datatypes.Root
+    properties:
+      name:
+        type: string
+        required: true
+      size:
+        type: scalar-unit.size
+        required: true
+      type:
+        type: string
+        required: true
+        default: data
+        constraints:
+          - valid_values: [data, temp, undo]

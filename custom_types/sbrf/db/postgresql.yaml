@@ -1,0 +1,70 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an Oracle Database with custom properties.
+
+
+dsl_definitions:
+  properties: &properties
+    postgres_version:
+      required: true
+      type: string
+      default: 11
+    postgres_db_name:
+      required: true
+      type: string
+      default: db
+      constraints:
+      - pattern: ^[a-z0-9]{2,8}$
+    postgres_db_user:
+      required: false
+      type: string
+      default: dbuser
+    postgres_db_password:
+      required: false
+      type: string
+      default: post1234
+    max_connections:
+      required: false
+      type: integer
+      default: 100
+
+  attributes: &attributes
+    db_connect_string:
+      type: string
+
+
+node_types:
+
+  sbrf.nodes.Database.Postgresql:
+    derived_from: tosca.nodes.Database
+    properties:
+      <<: *properties
+      net_segment:
+        type: string
+        required: true
+    attributes: *attributes
+    interfaces:
+      Standard:
+        create: postgresql_deploy
+        delete: postgresql_remove
+      Registry:
+        hpsm:
+          implementation: ansible:postgres_hpsm
+          serializer: tasks.plugins.python.hpsm.hpsm_serializer.HPSMSerializer
+          inputs: {}
+
+  sbrf.nodes.Database.PostgresqlDZO:
+    derived_from: tosca.nodes.Database
+    properties:
+      <<: *properties
+      pgdata_size:
+        type: integer
+        required: false
+        default: 10
+        constraints:
+        - greater_or_equal: 10
+    attributes: *attributes
+    interfaces:
+      Standard:
+        create: postgresql_dzo

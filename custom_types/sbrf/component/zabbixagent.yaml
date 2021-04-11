@@ -1,0 +1,29 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an Zabbix Agent with custom properties
+
+node_types:
+  sbrf.nodes.SoftwareComponent.ZabbixAgent:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      os_zabbix:
+        required: false
+        type: string
+        default: linux
+      net_segment:
+        type: string
+        required: true
+
+    interfaces:
+      Standard:
+        create: zabbix_agent
+        delete: zabbix_delete
+        start:
+          implementation: ansible:zabbix_switch
+          serializer: tasks.plugins.ansible.ansible_serializer.AnsibleSerializer
+          inputs: {}
+        stop:
+          implementation: ansible:zabbix_switch
+          serializer: tasks.plugins.ansible.ansible_serializer.AnsibleSerializer
+          inputs: {}

@@ -1,0 +1,15 @@
+server_ip:
+  description: IP адрес сервера
+  value: { get_attribute: [appliance, tosca_server_ip] }
+server_pip_ip:
+  description: Proxy IP адрес сервера
+  value: { get_attribute: [appliance, tosca_server_pip_ip] }
+server_mgmt_ip:
+  description: Mgmt IP адрес сервера
+  value: { get_attribute: [appliance, tosca_server_mgmt_ip] }
+vm_id:
+  description: Идентификатор сервера на платформе
+  value: { get_attribute: [appliance, tosca_server_uuid] }
+macaddress:
+  description: Mac address
+  value: { get_attribute: [appliance, tosca_mac] }

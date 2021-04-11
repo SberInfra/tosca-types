@@ -1,0 +1,43 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying a MariaDB Database with custom properties.
+
+
+
+
+node_types:
+
+  sbrf.nodes.Database.MariaDB:
+    derived_from: tosca.nodes.Database
+    properties:
+      mariadb_version:
+        required: true
+        type: string
+        default: '5.5.60'
+      mariadb_db_name:
+        required: true
+        type: string
+        default: db
+      mariadb_db_user:
+        required: false
+        type: string
+        default: mariadb
+      mariadb_db_password:
+        required: false
+        type: string
+        default: mariadb
+    interfaces:
+      Standard:
+        create: mariadb
+
+  sbrf.nodes.Database.MariaDBDZO:
+    derived_from: tosca.nodes.Database
+    properties:
+      mariadb_version:
+        required: true
+        type: string
+        default: 'latest'
+    interfaces:
+      Standard:
+        create: mariadb_dzo

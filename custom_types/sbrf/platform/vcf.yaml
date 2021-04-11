@@ -1,0 +1,109 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying a server with custom properties for image,
+  flavor and key_name.
+
+node_types:
+
+  sbrf.nodes.vcf.VApp:
+    derived_from: sbrf.nodes.Root
+    properties:
+      vcf_application:
+        type: string
+        required: true
+      asm_name:
+        type: string
+        required: true
+      critical_class:
+        type: string
+        required: true
+      datacenter:
+        type: string
+        required: true
+      net_zone:
+        type: string
+        required: true
+      environment:
+        type: string
+        required: false
+      ci:
+        type: string
+        required: false
+    interfaces:
+      Standard:
+        create:
+          implementation: python:tasks.plugins.python.vcf_app.vcf_app_plugin.ProvisionApplication
+          serializer: tasks.plugins.python.vcf_app.vcf_app_serializer.VCFAppSerializer
+          inputs: {}
+        delete:
+          implementation: python:tasks.plugins.python.vcf_app.vcf_app_plugin.DecommissionApplication
+          serializer: tasks.plugins.python.vcf_app.vcf_app_serializer.VCFAppSerializer
+          inputs: {}
+
+
+  sbrf.nodes.vcf.Compute.vcfBase:
+    derived_from: sbrf.nodes.Compute
+    properties:
+      hostnames:
+        type: list
+        required: true
+      joindomain:
+        type: string
+        required: true
+      domain:
+        type: string
+        required: true
+      net_segment:
+        type: string
+        required: true
+      datacenter:
+        type: string
+        required: true
+      customSpec:
+        type: string
+        required: true
+      flavor:
+        type: string
+        required: true
+      additionalVolumesGB:
+        type: list
+        required: true
+      volume_size:
+        type: integer
+        required: true
+      ci:
+        type: string
+        required: false
+      critical_class:
+        type: string
+        required: true
+      version_jdk:
+        type: enum
+        required: false
+    requirements:
+      - hostname_service:
+          relationship: tosca.relationships.DependsOn
+          node: sbrf.nodes.services.hostname_service
+    interfaces:
+      Maintenance:
+        start:
+          implementation: python:tasks.plugins.python.vcf_update_power_state_vm.vcf_update_power_state_plugin.PowerOnVm
+          serializer: tasks.plugins.python.vcf_update_power_state_vm.vcf_update_power_state_serializer.UpdatePowerStateSerializer
+          inputs: {}
+        stop:
+          implementation: python:tasks.plugins.python.vcf_update_power_state_vm.vcf_update_power_state_plugin.PowerOffVm
+          serializer: tasks.plugins.python.vcf_update_power_state_vm.vcf_update_power_state_serializer.UpdatePowerStateSerializer
+          inputs: {}
+        restart:
+          implementation: python:tasks.plugins.python.vcf_update_power_state_vm.vcf_update_power_state_plugin.RebootVm
+          serializer: tasks.plugins.python.vcf_update_power_state_vm.vcf_update_power_state_serializer.UpdatePowerStateSerializer
+          inputs: {}
+        reset:
+          implementation: python:tasks.plugins.python.vcf_update_power_state_vm.vcf_update_power_state_plugin.ResetVm
+          serializer: tasks.plugins.python.vcf_update_power_state_vm.vcf_update_power_state_serializer.UpdatePowerStateSerializer
+          inputs: {}
+        resize:
+          implementation: python:tasks.plugins.python.vcf_resize.vcf_resize_plugin.ResizeVM
+          serializer: tasks.plugins.python.vcf_resize.vcf_resize_serializer.VCFResizeSerializer
+          inputs: {}

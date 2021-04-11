@@ -1,0 +1,71 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an haproxy with custom properties
+
+node_types:
+  sbrf.nodes.SoftwareComponent.OpenstackLinuxHAProxy:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      fault_tolerance:
+        type: string
+        required: true
+        default: cluster
+      box_server_count:
+        type: integer
+        required: true
+        default: 4
+      ports:
+        required: true
+        type: list
+    interfaces:
+      Standard:
+        create: haproxy
+
+    attributes:
+      cluster_name:
+        description: LB cluster name
+      tosca_server_pip_ip:
+        description: Proxy IP
+      tosca_server_mgmt_ip:
+        description: Management IP
+      tosca_server_ip:
+        description: Data IP
+
+  sbrf.nodes.SoftwareComponent.VMwareLinuxHAProxy:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      fault_tolerance:
+        type: string
+        required: true
+        default: cluster
+      box_server_count:
+        type: integer
+        required: true
+        default: 4
+    interfaces:
+      Standard:
+        create: haproxy
+
+    attributes:
+      cluster_name:
+        description: LB cluster name
+
+  sbrf.nodes.SoftwareComponent.vCLoudLinuxHAProxy:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      fault_tolerance:
+        type: string
+        required: true
+        default: cluster
+      box_server_count:
+        type: integer
+        required: true
+        default: 4
+    interfaces:
+      Standard:
+        create: haproxy
+
+    attributes:
+      cluster_name:
+        description: LB cluster name

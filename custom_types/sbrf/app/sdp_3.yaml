@@ -1,0 +1,42 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: Template for deploying SDP
+
+node_types:
+  sbrf.nodes.WebApplication.prepare_vms:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      flavor:
+        required: true
+        type: string
+      cluster_name:
+        required: true
+        type: string
+      volume_size:
+        required: true
+        type: integer
+      cluster_size:
+        required: true
+        type: string
+      fault_tolerance:
+        required: true
+        type: string
+    interfaces:
+      Standard:
+        create: sdp_3/create
+        delete: sdp_3/delete
+
+  sbrf.nodes.WebApplication.deploy_cluster:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      inventory_path:
+        type: string
+      cluster_name:
+        required: true
+        type: string
+      hosts:
+        type: list
+    interfaces:
+      Standard:
+        create: 
+          implementation: Ansible/playbooks/capcore/sdp/tosca_cluster_deploy.yml

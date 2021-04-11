@@ -1,0 +1,3 @@
+endpoint:
+  description: Строка подключения к БД Postgres
+  value: { get_attribute: [postgres, db_connect_string] }

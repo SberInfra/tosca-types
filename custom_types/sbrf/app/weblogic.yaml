@@ -1,0 +1,43 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an Weblogic Application Server
+  with custom properties
+
+
+
+
+node_types:
+
+  sbrf.nodes.WebApplication.Weblogic:
+    derived_from: tosca.nodes.WebApplication
+
+    properties:
+      wls_ver:
+        required: true
+        type: string
+      java_update:
+        required: true
+        type: string
+      wls_domain_name:
+        required: true
+        type: string
+      wls_name:
+        required: true
+        type: string
+
+    interfaces:
+      Standard:
+        create: weblogic
+
+    attributes:
+      tosca_os_user:
+        description: Return user name for server
+      tosca_os_pass:
+        description: Return password for server
+      tosca_spo_user:
+        description: Return user name for server
+      tosca_spo_pass:
+        description: Return password for server
+      tosca_spo_url:
+        description: Return server ip addresses

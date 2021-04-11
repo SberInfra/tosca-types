@@ -1,0 +1,15 @@
+server_ip:
+  description: IP адрес сервера
+  value: { get_attribute: [appliance, tosca_server_ip] }
+vm_id:
+  description: Идентификатор сервера на платформе
+  value: { get_attribute: [appliance, tosca_server_uuid] }
+monitor_user:
+  description: Пользователь с правами Monitor
+  value: { get_attribute: [appliance, monitor_user] }
+dp_domain_name:
+  description: Наименование домена DataPower
+  value: { get_attribute: [appliance, tosca_dp_domain_name] }
+macaddress:
+  description: Mac address
+  value: { get_attribute: [appliance, tosca_mac] }

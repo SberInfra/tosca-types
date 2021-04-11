@@ -1,0 +1,55 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an Nginx with custom properties
+
+
+
+
+node_types:
+
+  sbrf.nodes.WebServer.Nginx:
+    derived_from: tosca.nodes.WebServer
+    properties:
+      nginx_version:
+        required: true
+        type: version
+      nginx_geoip:
+        required: false
+        type: string
+      nginx_brotli:
+        required: false
+        type: string
+    interfaces:
+      Standard:
+        create: nginx
+
+    attributes:
+      tosca_nginx_url:
+        type: string
+      tosca_nginx_user:
+        description: Return user name for server
+      tosca_nginx_pass:
+        description: Return password for server
+
+  sbrf.nodes.WebServer.Nginx.dzo:
+    derived_from: tosca.nodes.WebServer
+    properties:
+      version:
+        required: true
+        type: string
+    interfaces:
+      Standard:
+        create: nginx_dzo
+
+  sbrf.nodes.WebServer.NginxEAG:
+    derived_from: tosca.nodes.WebServer
+    interfaces:
+      Standard:
+        create: nginx_eag
+
+    attributes:
+      tosca_nginx_user:
+        description: Return user name for server
+      tosca_nginx_pass:
+        description: Return password for server

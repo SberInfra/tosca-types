@@ -1,0 +1,34 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an IBM WebSphere MQ with
+  custom properties.
+
+node_types:
+
+  sbrf.nodes.WebApplication.MQ:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      version:
+        required: true
+        type: version
+      fix_pack:
+        required: true
+        type: integer
+      joindomain:
+        required: false
+        type: string
+      os_type_spo:
+        required: false
+        type: string
+        default: linux
+
+    interfaces:
+      Standard:
+        create: mq_deploy
+
+    attributes:
+      tosca_mq_user:
+        description: Return user name for server
+      tosca_mq_pass:
+        description: Return password for server

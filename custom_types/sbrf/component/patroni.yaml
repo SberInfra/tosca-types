@@ -1,0 +1,155 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying Postgres Patroni
+
+node_types:
+
+  sbrf.nodes.SoftwareComponent.postgres.primary:
+    derived_from: tosca.nodes.Database
+    properties:
+      net_segment:
+        type: string
+        required: true
+      postgres_version:
+        required: true
+        type: string
+        default: 11
+      postgres_dbs:
+        type: list
+        required: true
+        entry_schema:
+          type: string
+      postgres_db_password:
+        required: false
+        type: string
+        default: post1234
+    interfaces:
+      Standard:
+        create: postgres_primary
+
+  sbrf.nodes.SoftwareComponent.patroni.primary:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      net_segment:
+        type: string
+        required: true
+      postgres_version:
+        required: true
+        type: string
+        default: 11
+      postgres_dbs:
+        type: list
+        required: true
+        entry_schema:
+          type: string
+      postgres_db_password:
+        required: false
+        type: string
+        default: post1234
+    attributes:
+      db_connect_string:
+        type: string
+    interfaces:
+      Standard:
+        create: patroni_primary
+        delete: patroni_primary_remove
+
+  sbrf.nodes.SoftwareComponent.postgres.standby:
+    derived_from: tosca.nodes.Database
+    properties:
+      net_segment:
+        type: string
+        required: true
+      postgres_version:
+        required: true
+        type: string
+        default: 11
+      postgres_dbs:
+        type: list
+        required: true
+        entry_schema:
+          type: string
+      postgres_db_password:
+        required: false
+        type: string
+        default: post1234
+    interfaces:
+      Standard:
+        create: postgres_standby
+
+  sbrf.nodes.SoftwareComponent.patroni.standby:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      net_segment:
+        type: string
+        required: true
+      postgres_version:
+        required: true
+        type: string
+        default: 11
+      postgres_dbs:
+        type: list
+        required: true
+        entry_schema:
+          type: string
+      postgres_db_password:
+        required: false
+        type: string
+        default: post1234
+    attributes:
+      db_connect_string:
+        type: string
+    interfaces:
+      Standard:
+        create: patroni_standby
+        delete: patroni_standby_remove
+
+  sbrf.nodes.SoftwareComponent.postgres.observer:
+    derived_from: tosca.nodes.Database
+    properties:
+      net_segment:
+        type: string
+        required: true
+      postgres_version:
+        required: true
+        type: string
+        default: 11
+      postgres_dbs:
+        type: list
+        required: true
+        entry_schema:
+          type: string
+      postgres_db_password:
+        required: false
+        type: string
+        default: post1234
+    attributes:
+      patroni_scope_name:
+        type: string
+    interfaces:
+      Standard:
+        create: postgres_observer
+
+  sbrf.nodes.SoftwareComponent.patroni.observer:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      net_segment:
+        type: string
+        required: true
+      postgres_version:
+        required: true
+        type: string
+        default: 11
+      postgres_dbs:
+        type: list
+        required: true
+        entry_schema:
+          type: string
+      postgres_db_password:
+        required: false
+        type: string
+        default: post1234
+    interfaces:
+      Standard:
+        create: patroni_observer

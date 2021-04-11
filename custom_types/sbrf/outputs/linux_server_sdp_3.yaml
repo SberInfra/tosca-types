@@ -1,0 +1,30 @@
+---
+user_master:
+    description: Учетная запись для доступа к серверу master
+    value: { get_attribute: [linux_master, tosca_user_name] }
+password_master:
+    description: Пароль для доступа к серверу master
+    value: { get_attribute: [linux_master, tosca_password] }
+    hidden: True
+    uitype: password
+server_ip_master:
+    description: IP адрес сервера master
+    value: { get_attribute: [linux_master, tosca_server_ip] }
+vm_id_master:
+    description: Идентификатор сервера master на платформе
+    value: { get_attribute: [linux_master, tosca_server_uuid] }
+
+user_worker:
+    description: Учетная запись для доступа к серверу worker
+    value: { get_attribute: [linux_worker, tosca_user_name] }
+password_worker:
+    description: Пароль для доступа к серверу worker
+    value: { get_attribute: [linux_worker, tosca_password] }
+    hidden: True
+    uitype: password
+server_ip_worker:
+    description: IP адрес сервера worker
+    value: { get_attribute: [linux_worker, tosca_server_ip] }
+vm_id_worker:
+    description: Идентификатор сервера worker на платформе
+    value: { get_attribute: [linux_worker, tosca_server_uuid] }

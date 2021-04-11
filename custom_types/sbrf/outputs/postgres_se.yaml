@@ -1,0 +1,10 @@
+endpoint:
+  description: Строка подключения к БД Postgres
+  value: { get_attribute: [postgresql_se, db_connect_string] }
+postgres_user:
+  description: Владелец исталяции Postgres
+  value: { get_attribute: [postgresql_se_sudo, postgres_user] }
+postgres_pass:
+  description: Пароль для ТУЗ Postgres
+  value: { get_attribute: [postgresql_se_sudo, postgres_pass] }
+  hidden: True

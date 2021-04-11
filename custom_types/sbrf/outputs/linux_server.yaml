@@ -1,0 +1,23 @@
+user:
+  description: Учетная запись для доступа к серверу
+  value: { get_attribute: [linux_server, tosca_user_name] }
+password:
+  description: Пароль для доступа к серверу
+  value: { get_attribute: [linux_server, tosca_password] }
+  hidden: True
+  uitype: password
+server_ip:
+  description: IP адрес сервера
+  value: { get_attribute: [linux_server, tosca_server_ip] }
+vm_id:
+  description: Идентификатор сервера на платформе
+  value: { get_attribute: [linux_server, tosca_server_uuid] }
+fqdn:
+  description: Идентификатор сервера на платформе
+  value: { get_attribute: [linux_server, tosca_server_fqdn] }
+macaddress:
+  description: Mac address
+  value: { get_attribute: [linux_server, tosca_mac] }
+hash:
+  description: server hash
+  value: { get_attribute: [linux_server, tosca_hash] }

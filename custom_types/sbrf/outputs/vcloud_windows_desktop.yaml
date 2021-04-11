@@ -1,0 +1,3 @@
+vapp_name:
+  description: Наименование VAPP
+  value: { get_attribute: [windows_desktop, tosca_vapp_name] }

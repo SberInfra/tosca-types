@@ -1,0 +1,24 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an IBDM machine
+
+node_types:
+  sbrf.nodes.WebApplication.dl_ibdm:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      user_login:
+        type: string
+        required: true
+      user_email:
+        type: string
+        required: true
+      flavor:
+        type: string
+        required: true
+    interfaces:
+      Standard:
+        create: dl_apps/dl_ibdm
+        delete: dl_libs/dl_delete
+        start: dl_libs/dl_start
+        stop: dl_libs/dl_stop

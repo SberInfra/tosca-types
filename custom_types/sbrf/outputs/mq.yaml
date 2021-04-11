@@ -1,0 +1,8 @@
+mq_user:
+  description: Учетная запись пользователя MQ
+  value: { get_attribute: [mq, tosca_mq_user] }
+mq_password:
+  description: Пароль пользователя MQ
+  value: { get_attribute: [mq, tosca_mq_pass] }
+  hidden: true
+  uitype: password

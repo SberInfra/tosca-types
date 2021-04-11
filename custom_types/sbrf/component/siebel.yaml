@@ -1,0 +1,15 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an Siebel with custom properties
+
+node_types:
+  sbrf.nodes.SoftwareComponent.Siebel:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      version:
+        required: true
+        type: version
+    interfaces:
+      Standard:
+        create: siebel

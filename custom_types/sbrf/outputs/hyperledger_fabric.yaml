@@ -1,0 +1,18 @@
+ldap_username:
+  description: Учетная запись администратора LDAP каталога
+  value: { get_attribute: [hyperledger_fabric, ldap_username] }
+ldap_password:
+  description: Пароль учетной записи администратора LDAP каталога
+  value: { get_attribute: [hyperledger_fabric, ldap_password] }
+  hidden: True
+  uitype: password
+security_rules:
+  description: Правила межсетевого экрана
+  value: { get_attribute: [hyperledger_fabric, security_rules] }
+services_catalog:
+  description: Каталог сервисов
+  value: { get_attribute: [hyperledger_fabric, services_catalog] }
+new_security_group_name:
+  description: Имя группы безопасности сервера
+  value: { get_attribute: [hyperledger_fabric, new_security_group_name] }
+

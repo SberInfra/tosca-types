@@ -1,0 +1,232 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying a server with custom properties for image,
+  flavor and key_name.
+
+node_types:
+
+  sbrf.nodes.vmware.service.reserve_ip:
+    derived_from: sbrf.nodes.Root
+    properties:
+      serial_number:
+        type: string
+        required: true
+      hostnames:
+        type: list
+        required: true
+      servers:
+        type: list
+        required: true
+      domain:
+        type: string
+        required: true
+      customer:
+        type: string
+        required: true
+      environment:
+        type: string
+        required: true
+      as_name:
+        type: string
+        required: true
+      critical_class:
+        type: string
+        required: true
+      datacenter:
+        type: string
+        required: true
+      action:
+        type: string
+        required: false
+        default: reserve_ip
+      interfaces:
+        type: list
+        required: false
+        entry_schema:
+          type: sbrf.datatypes.interface
+    attributes:
+      interfaces:
+        type: list
+        entry_schema:
+          type: sbrf.datatypes.vmware.interface
+    requirements:
+      - reserve_ip:
+          description: >
+            This requirement expresses the relationship between Hostname_service and VMWare Compute nodes.
+            Effectively it indicates that the Compute node dependence from this service
+          relationship: tosca.relationships.DependsOn
+          node: sbrf.nodes.Compute.VMWareBase
+      - hostname_service:
+          node: sbrf.nodes.services.hostname_service
+          relationship: tosca.relationships.DependsOn
+      - server:
+          node: sbrf.nodes.Compute
+          relationship: tosca.relationships.DependsOn
+    interfaces:
+      Standard:
+        create:
+          implementation: python:tasks.plugins.python.network.ip_reserve_plugin.ReserveIP
+          serializer: tasks.plugins.python.network.ip_reserve_serializer.IPReserveSerializer
+          inputs: {}
+        delete:
+          implementation: python:tasks.plugins.python.network.ip_reserve_plugin.FreeIP
+          serializer: tasks.plugins.python.network.ip_reserve_serializer.IPReserveSerializer
+          inputs: {}
+
+
+  sbrf.nodes.vmware.service.reserve_dns:
+    derived_from: sbrf.nodes.Root
+    properties:
+      hostnames:
+        type: list
+        required: true
+      domain:
+        type: string
+        required: true
+      joindomain:
+        type: string
+        required: true
+      interfaces:
+        type: list
+        required: false
+        entry_schema:
+          type: sbrf.datatypes.vmware.interface
+    requirements:
+      - reserve_dns:
+          description: >
+            This requirement expresses the relationship between Hostname_service and VMWare Compute nodes.
+            Effectively it indicates that the Compute node dependence from this service
+          relationship: tosca.relationships.DependsOn
+          node: sbrf.nodes.Compute.VMWareBase
+      - reserve_ip:
+          node: sbrf.nodes.vmware.service.reserve_ip
+          relationship: tosca.relationships.DependsOn
+    interfaces:
+      Standard:
+        create:
+          implementation: python:tasks.plugins.python.dns.dns_reserve_plugin.ReserveDNS
+          serializer: tasks.plugins.python.dns.dns_reserve_serializer.DNSReserveSerializer
+          inputs: {}
+        delete:
+          implementation: python:tasks.plugins.python.dns.dns_reserve_plugin.FreeDNS
+          serializer: tasks.plugins.python.dns.dns_reserve_serializer.DNSReserveSerializer
+          inputs: {}
+
+
+  sbrf.nodes.Compute.VMWareBase:
+    derived_from: sbrf.nodes.Compute
+    properties:
+      erpm_vcenter_user:
+        type: string
+        required: true
+        default: vcenter_user
+      erpm_vcenter_user_pass:
+        type: string
+        required: true
+        default: vcenter_user_pass
+      validate_certs:
+        type: boolean
+        required: true
+        default: false
+        constraints:
+        - valid_values: [true, false]
+      state:
+        type: string
+        required: true
+        default: poweredon
+        constraints:
+        - valid_values: [present, absent, poweredon, poweredoff, restarted, suspended]
+      volume_size:
+        required: true
+        type: integer
+        constraints:
+        - greater_or_equal: 50
+      net_segment:
+        type: string
+        required: true
+        constraints:
+        - valid_values: [idz, ipz, edz, epz, idz-sbrf, edz-sbrf]
+      joindomain:
+        type: string
+        required: true
+        constraints:
+        - valid_values: [ca.sbrf.ru, omega.sbrf.ru, sigma.sbrf.ru]
+      serial_number:
+        type: string
+        required: true
+      flavor:
+        type: string
+        required: false
+        default: m1.tiny
+        description: "Flavor"
+        constraints:
+        - valid_values: [m1.tiny, m2.tiny, m4.tiny, m6.tiny, m8.tiny, m16.tiny,
+                         m1.small, m2.small, m4.small, m6.small, m8.small, m16.small,
+                         m1.medium, m2.medium, m4.medium, m6.medium, m8.medium,
+                         m1.large, m2.large, m4.large, m6.large, m8.large, m12.large, m16.large,
+                         m1.xlarge, m2.xlarge, m4.xlarge, m6.xlarge, m8.xlarge,
+                         gpu14.large, gpu15.large, gpu7.xxlarge,
+                         avaya_smgr_small_c6_r12, avaya_aes_small_c4_r6, avaya_sm_small_c8_r10,
+                         lb_small_2_8, lb_medium_5_16, lb_largel_9_32,
+                         lb_xlarge_17_64 ]
+    requirements:
+      - reserve_dns:
+          node: sbrf.nodes.vmware.service.reserve_dns
+          relationship: tosca.relationships.DependsOn
+
+  sbrf.nodes.Compute.VMWare:
+    derived_from: sbrf.nodes.Compute.VMWareBase
+    properties:
+      hardware:
+        required: true
+        type: map
+        entry_schema:
+          type: sbrf.datatypes.Compute.VMWare.hardware
+
+data_types:
+
+  sbrf.datatypes.Compute.VMWare.hardware:
+    derived_from: tosca.datatypes.Root
+    properties:
+      memory_mb:
+        type: integer
+        required: true
+      num_cpus:
+        type: integer
+        required: true
+
+
+  sbrf.datatypes.vmware.interface:
+    derived_from: tosca.datatypes.Root
+    properties:
+      ip:
+        type: string
+        required: true
+      gateway:
+        type: string
+        required: true
+      hostname:
+        type: string
+        required: true
+      name:
+        type: string
+        required: true
+      vlan:
+        type: string
+        required: false
+      prefix:
+        type: string
+        required: true
+      netmask:
+        type: string
+        required: true
+      network:
+        type: string
+        required: true
+      dns_servers:
+        type: list
+        required: true
+      interface:
+        type: sbrf.datatypes.interface
+        required: true

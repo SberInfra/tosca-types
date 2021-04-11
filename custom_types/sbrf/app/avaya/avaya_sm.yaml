@@ -1,0 +1,32 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying a server with custom properties.
+
+node_types:
+  sbrf.nodes.Compute.VMWareOVA.sm:
+    derived_from: sbrf.nodes.Compute.VMWareBase
+    properties:
+      customer:
+        type: string
+        required: false
+      smgr_ip:
+        type: string
+        required: false
+      enrollment_password:
+        type: string
+        required: false
+      cust_user:
+        type: string
+        required: false
+      cust_password:
+        type: string
+        required: false
+    interfaces:
+      Standard:
+        create: vmware_ova
+        delete: vm_delete
+        
+    attributes:
+      tosca_avaya_url:
+        description: Return server url addresses

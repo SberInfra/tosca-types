@@ -1,0 +1,14 @@
+server_ip:
+  description: IP адрес сервера
+  value: { get_attribute: [windows_desktop, tosca_server_ip] }
+vm_id:
+  description: Идентификатор сервера на платформе
+  value: { get_attribute: [windows_desktop, tosca_server_uuid] }
+user:
+  description: Учетная запись для доступа к серверу
+  value: { get_attribute: [windows_desktop, tosca_user_name] }
+password:
+  description: Пароль для доступа к серверу
+  value: { get_attribute: [windows_desktop, tosca_password] }
+  hidden: True
+  uitype: password

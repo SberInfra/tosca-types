@@ -1,0 +1,3 @@
+vapp_name:
+  description: Наименование VAPP
+  value: { get_attribute: [linux_server, tosca_vapp_name] }

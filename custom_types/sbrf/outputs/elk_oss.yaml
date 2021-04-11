@@ -1,0 +1,11 @@
+os_user:
+  description: Учетная запись для доступа к серверу
+  value: { get_attribute: [elk_oss, elk_login] }
+os_password:
+  description: Пароль для доступа к серверу
+  value: { get_attribute: [elk_oss, elk_secret] }
+  hidden: True
+  uitype: password
+endpoint:
+  description: ELK URL
+  value: { get_attribute: [elk_oss, tosca_kibana_url] }

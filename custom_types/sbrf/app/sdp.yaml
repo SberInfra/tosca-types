@@ -1,0 +1,50 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an SDP Hadoop with
+  custom properties.
+
+node_types:
+
+  sbrf.nodes.WebApplication.sdp:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      sdp_deploy_method:
+        type: string
+        required: false
+        default: "auto"
+        constraints:
+          - valid_values: ["auto", "manual"]
+      erpm_ipa_user_name:
+        type: string
+        required: true
+        default: sdp_ipa_user_name
+        constraints:
+          - valid_values: [sdp_ipa_user_name]
+      erpm_ipa_user_pass:
+        type: string
+        required: true
+        default: sdp_ipa_user_pass
+        constraints:
+          - valid_values: [sdp_ipa_user_pass]
+      erpm_pass:
+        type: string
+        required: true
+        default: pass
+        constraints:
+          - valid_values: [pass]
+      erpm_nexus_user:
+        type: string
+        required: true
+        default: nexus_user
+        constraints:
+          - valid_values: [nexus_user]
+      erpm_nexus_pass:
+        type: string
+        required: true
+        default: nexus_pass
+        constraints:
+          - valid_values: [nexus_pass]
+    interfaces:
+      Standard:
+        create: sdp

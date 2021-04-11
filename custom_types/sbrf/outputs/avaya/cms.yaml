@@ -1,0 +1,6 @@
+vm_id:
+  description: Идентификатор сервера на платформе
+  value: { get_attribute: [avaya, tosca_server_uuid] }
+macaddress:
+  description: Mac address
+  value: { get_attribute: [avaya, tosca_mac] }

@@ -1,0 +1,3 @@
+server_security_groups:
+  description: Группы безопасности сервера
+  value: { get_attribute: [windows_server, server_security_groups] }

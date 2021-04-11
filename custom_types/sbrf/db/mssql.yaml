@@ -1,0 +1,105 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an MS SQL with custom properties.
+
+
+
+
+node_types:
+
+  sbrf.nodes.DBMS.mssql:
+    derived_from: tosca.nodes.DBMS
+    properties:
+      version:
+        required: true
+        type: string
+        constraints:
+          - valid_values: ["2014", "2016", "2017"]
+      sp:
+        required: false
+        type: string
+        constraints:
+          - valid_values: ["2","3","4"]
+      cu:
+        required: false
+        type: string
+        default: latest
+      ssms:
+        required: false
+        type: boolean
+        default: false
+      joindomain:
+        required: true
+        type: string
+      net_segment:
+        type: string
+        required: true
+      collation:
+        required: true
+        type: string
+        default: SQL_Latin1_General_CP1251_CI_AS
+        constraints:
+          - valid_values: [SQL_Latin1_General_CP1251_CI_AS]
+      erpm_winrm_user:
+        type: string
+        required: true
+        default: winrm_user
+        constraints:
+          - valid_values: [winrm_user]
+      erpm_winrm_user_pass:
+        type: string
+        required: true
+        default: winrm_user_pass
+        constraints:
+          - valid_values: [winrm_user_pass]
+    interfaces:
+      Standard:
+        create: mssql_deploy
+    attributes:
+      db_sa_password:
+        type: string
+
+  sbrf.nodes.Database.mssql:
+    derived_from: tosca.nodes.Database
+    properties:
+      joindomain:
+        required: true
+        type: string
+      dbo:
+        type: string
+        required: true
+        default: mssql
+        constraints:
+          - min_length: 4
+          - max_length: 20
+      database:
+        type: string
+        required: true
+        constraints:
+          - pattern: ^[A-Za-z0-9]{3,30}$
+      erpm_winrm_user:
+        type: string
+        required: true
+        default: winrm_user
+        constraints:
+          - valid_values: [winrm_user]
+      erpm_winrm_user_pass:
+        type: string
+        required: true
+        default: winrm_user_pass
+        constraints:
+          - valid_values: [winrm_user_pass]
+      recovery_model:
+        type: string
+        required: true
+        default: "Simple"
+        constraints:
+          - valid_values: ["Simple", "Full"]
+    attributes:
+      db_user_password:
+        type: string
+    interfaces:
+      Standard:
+        create: mssql_setup
+        delete: mssql_delete

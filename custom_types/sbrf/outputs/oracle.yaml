@@ -1,0 +1,12 @@
+endpoint:
+  description: Строка подключения к БД Oracle
+  value: { get_attribute: [oracle_database, db_connect_string] }
+cloud_connected:
+  description: Отчет о подключении БД к Cloud Control
+  value: { get_attribute: [oracle_config, cloud_connected] }
+collect_connected:
+  description: Отчет о подключении БД к Collect
+  value: { get_attribute: [oracle_config, collect_connected] }
+oracle_psu_version:
+  description: Версия Oracle PSU
+  value: { get_attribute: [oracle_dbms, oracle_psu_version] }

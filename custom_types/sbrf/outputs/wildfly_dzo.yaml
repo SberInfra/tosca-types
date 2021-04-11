@@ -1,0 +1,8 @@
+wfadmin_user:
+  description: Учетная запись пользователя ОС wfadmin
+  value: { get_attribute: [wildfly, wf_admin_name] }
+wfadmin_password:
+  description: Пароль пользователя ОС wfadmin
+  value: { get_attribute: [wildfly, wf_secret] }
+  hidden: true
+  uitype: password

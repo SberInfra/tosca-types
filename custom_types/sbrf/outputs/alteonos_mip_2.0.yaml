@@ -1,0 +1,31 @@
+server_ip_t1:
+  description: IP адрес сервера
+  value: { get_attribute: [tier1_vm, tosca_server_ip] }
+server_pip_ip_t1:
+  description: Proxy IP адрес сервера
+  value: { get_attribute: [tier1_vm, tosca_server_pip_ip] }
+server_mgmt_ip_t1:
+  description: Mgmt IP адрес сервера
+  value: { get_attribute: [tier1_vm, tosca_server_mgmt_ip] }
+#vm_id_t1:
+#  description: Идентификатор сервера на платформе
+#  value: { get_attribute: [tier1_vm, tosca_server_uuid] }
+#macaddress_t1:
+#  description: Mac address
+#  value: { get_attribute: [tier1_vm, tosca_mac] }
+
+server_ip_t2:
+  description: IP адрес сервера
+  value: { get_attribute: [tier2_vm, tosca_server_ip] }
+server_pip_ip_t2:
+  description: Proxy IP адрес сервера
+  value: { get_attribute: [tier2_vm, tosca_server_pip_ip] }
+server_mgmt_ip_t2:
+  description: Mgmt IP адрес сервера
+  value: { get_attribute: [tier2_vm, tosca_server_mgmt_ip] }
+#vm_id_t2:
+#  description: Идентификатор сервера на платформе
+#  value: { get_attribute: [tier2_vm, tosca_server_uuid] }
+#macaddress_t2:
+#  description: Mac address
+#  value: { get_attribute: [tier2_vm, tosca_mac] }

@@ -1,0 +1,32 @@
+wfadmin_user:
+  description: Учетная запись пользователя ОС wfadmin
+  value: { get_attribute: [wildfly, tosca_wfadmin_user] }
+wfadmin_password:
+  description: Пароль пользователя ОС wfadmin
+  value: { get_attribute: [wildfly, tosca_wfadmin_pass] }
+  hidden: true
+  uitype: password
+wfadmin2_user:
+  description: Учетная запись пользователя ОС wfadmin2
+  value: { get_attribute: [wildfly, tosca_wfadmin2_user] }
+wfadmin2_password:
+  description: Пароль пользователя ОС wfadmin2
+  value: { get_attribute: [wildfly, tosca_wfadmin2_pass] }
+  hidden: true
+  uitype: password
+wf_user:
+  description: Учетная запись пользователя СПО wfadmin
+  value: { get_attribute: [wildfly, tosca_wf_user] }
+wf_password:
+  description: Пароль пользователя СПО wfadmin
+  value: { get_attribute: [wildfly, tosca_wf_pass] }
+  hidden: true
+  uitype: password
+wf2_user:
+  description: Учетная запись пользователя СПО wfadmin2
+  value: { get_attribute: [wildfly, tosca_wf2_user] }
+wf2_password:
+  description: Пароль пользователя СПО wfadmin2
+  value: { get_attribute: [wildfly, tosca_wf2_pass] }
+  hidden: true
+  uitype: password

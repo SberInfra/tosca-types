@@ -1,0 +1,8 @@
+ibus_user:
+  description: Учетная запись пользователя IBUS
+  value: { get_attribute: [ibus, tosca_ibus_user] }
+ibus_password:
+  description: Пароль пользователя IBUS
+  value: { get_attribute: [ibus, tosca_ibus_pass] }
+  hidden: true
+  uitype: password

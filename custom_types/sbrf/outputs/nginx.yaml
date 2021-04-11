@@ -1,0 +1,11 @@
+nginx_user:
+  description: Учетная запись администратора Nginx
+  value: { get_attribute: [nginx, tosca_nginx_user] }
+nginx_password:
+  description: Пароль администратора Nginx
+  value: { get_attribute: [nginx, tosca_nginx_pass] }
+  hidden: true
+  uitype: password
+endpoint:
+  description: Строка подключения к Nginx
+  value: { get_attribute: [nginx, tosca_nginx_url] }

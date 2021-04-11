@@ -1,0 +1,92 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Type specs for OpenShift management
+
+node_types:
+  sbrf.nodes.OpenShift:
+    derived_from: sbrf.nodes.Root
+    properties:
+      serial_number:
+        type: string
+        required: true
+      project_name:
+        type: string
+        required: true
+    interfaces:
+      Maintenance:
+        type: sbrf.interfaces.node.lifecycle.Maintenance
+
+  sbrf.nodes.OpenShift.Project:
+    derived_from: sbrf.nodes.OpenShift
+    properties:
+      admin_user:
+        type: string
+        required: true
+      memory_mb:
+        type: integer
+        required: true
+      num_cpus:
+        type: integer
+        required: true
+      ci:
+        type: string
+        required: true
+    attributes:
+      openshift_url:
+        type: string
+      tosca_server_uuid:
+        type: string
+      os_project_name:
+        type: string
+    interfaces:
+      Standard:
+        create:
+          implementation: openshift_project
+          inputs: {}
+        delete:
+          implementation: openshift_project_delete
+          inputs: {}
+      Maintenance:
+        resize:
+          implementation: ansible:openshift_project_resize
+          serializer: tasks.plugins.python.openshift.openshift_serializer.OpenShiftSerializer
+          inputs: {}
+
+
+  sbrf.nodes.OpenShift.ProjectSBC:
+    derived_from: sbrf.nodes.OpenShift
+    properties:
+      admin_user:
+        type: string
+        required: true
+      memory_mb:
+        type: integer
+        required: true
+      num_cpus:
+        type: integer
+        required: true
+      volume_size:
+        type: integer
+        required: true
+    attributes:
+      openshift_url:
+        type: string
+      tosca_server_uuid:
+        type: string
+      os_project_name:
+        type: string
+      openshift_quota:
+        type: map
+    interfaces:
+      Standard:
+        create:
+          implementation: openshift_project_sbc
+          inputs: {}
+        delete:
+          implementation: openshift_project_delete_sbc
+          inputs: {}
+      Maintenance:
+        resize:
+          implementation: openshift_project_resize_sbc
+          inputs: {}

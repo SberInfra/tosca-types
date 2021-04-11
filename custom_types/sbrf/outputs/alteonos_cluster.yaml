@@ -1,0 +1,3 @@
+cluster_name:
+  description: Имя кластера
+  value: { get_attribute: [alteonos, cluster_name] }

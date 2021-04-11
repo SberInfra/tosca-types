@@ -1,0 +1,8 @@
+websphere_user:
+  description: Учетная запись для доступа к серверу
+  value: { get_attribute: [ignite_se, os_user_name] }
+websphere_password:
+  description: Пароль для доступа к серверу
+  value: { get_attribute: [ignite_se, os_user_pass] }
+  hidden: True
+  uitype: password

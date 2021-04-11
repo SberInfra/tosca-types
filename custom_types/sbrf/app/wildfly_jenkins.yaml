@@ -1,0 +1,50 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an WildFly Application Server
+  with custom properties
+
+
+
+
+node_types:
+
+  sbrf.nodes.WebApplication.WildFlyJenkins:
+    derived_from: tosca.nodes.WebApplication
+
+    properties:
+      version:
+        required: true
+        type: string
+      version_jdk:
+        required: true
+        type: string
+      volume_size:
+        required: false
+        type: integer
+
+    capabilities:
+      scalable:
+        type: sbrf.capabilities.Scalable
+
+    interfaces:
+      Standard:
+        create: wildfly_jenkins
+        
+    attributes:
+      tosca_wfadmin_user:
+        description: Return user name for server
+      tosca_wfadmin_pass:
+        description: Return password for server
+      tosca_wfadmin2_user:
+        description: Return user name for server
+      tosca_wfadmin2_pass:
+        description: Return password for server
+      tosca_wf_user:
+        description: Return user name for server
+      tosca_wf_pass:
+        description: Return password for server
+      tosca_wf2_user:
+        description: Return user name for server
+      tosca_wf2_pass:
+        description: Return password for server

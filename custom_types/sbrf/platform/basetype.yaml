@@ -1,0 +1,369 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+
+description: >
+  Template for deploying a server with custom properties.
+
+
+capability_types:
+  sbrf.capabilities.Scalable:
+    derived_from: tosca.capabilities.Scalable
+    properties:
+      instances:
+        type: integer
+        required: true
+        default: 1
+        constraints:
+        - in_range: [1, 16]
+
+  sbrf.capabilities.OperatingSystem:
+    derived_from: tosca.capabilities.OperatingSystem
+    properties:
+      architecture:
+        required: true
+        type: string
+        constraints:
+        - valid_values: [x86_64, sparc, powerpc, x86_32]
+      type:
+        required: true
+        type: string
+        constraints:
+        - valid_values: [unix, linux, windows, appliance]
+      distribution:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+      vendor:
+        required: false
+        type: string
+
+      localization:
+        required: false
+        type: string
+        constraints:
+        - valid_values: [ru, eng]
+
+interface_types:
+
+  sbrf.interfaces.node.lifecycle.Standard:
+    derived_from: tosca.interfaces.Root
+    create:
+      description: Standard lifecycle create operation.
+    configure:
+      description: Standard lifecycle configure operation.
+    delete:
+      description: Standard lifecycle delete operation.
+
+  sbrf.interfaces.node.lifecycle.Strongswan:
+    derived_from: tosca.interfaces.Root
+    add_conn:
+      description: >-
+        Resize compute node or project
+    remove_conn:
+      description: >-
+        Remove connection
+    update_conn:
+      description: >-
+        Update connection
+    read_log:
+      description: >-
+        Read strongswan vpn logs
+    ping:
+      description: >-
+        ping
+    traceroute:
+      description: >-
+        traceroute
+
+  sbrf.interfaces.node.lifecycle.Update:
+    derived_from: tosca.interfaces.Root
+    update:
+      description: >-
+        Maintenance lifecycle update compute node after start
+
+  sbrf.interfaces.node.lifecycle.Maintenance:
+    derived_from: tosca.interfaces.Root
+    resize:
+      description: >-
+        Maintenance lifecycle resize compute node or project
+    start:
+      description: >-
+        Maintenance lifecycle start operation.
+    stop:
+      description: >-
+        Maintenance lifecycle stop operation.
+    restart:
+      description: >-
+        Maintenance lifecycle restart operation
+    reset:
+      description: >-
+        Maintenance lifecycle reset operation.
+    hash:
+      description: >-
+        Check configuration hash
+
+  sbrf.interfaces.node.lifecycle.Handler:
+    derived_from: tosca.interfaces.Root
+    before:
+      description: >-
+        Run before operation
+    after:
+      description: >-
+        Run after operation
+
+  sbrf.interfaces.node.lifecycle.Notify:
+    derived_from: tosca.interfaces.Root
+    start_notify:
+      description: >-
+        Notify about lifecycle start operation.
+    stop_notify:
+      description: >-
+        Notify about lifecycle stop operation.
+
+  sbrf.interfaces.node.lifecycle.Registry:
+    derived_from: tosca.interfaces.Root
+    hpsm:
+      description: >-
+        Registry server information in HPSM.
+
+artifact_types:
+
+  sbrf.artifacts.Package:
+    derived_from: tosca.artifacts.Root
+    description: >
+      The git Package Artifact, TOSCA will download all catalogs from repository and extract to working dir
+    properties:
+      package_name:
+        description: >
+          single package name
+        type: string
+        required: false
+      default_production_version:
+        description: >
+          Branch name for production, default is master
+        type: string
+        required: false
+        default: origin/master
+      default_develop_version:
+        description: >
+          Branch name for dev and test, default is develop
+        type: string
+        required: false
+        default: origin/develop
+      version:
+        description: >
+          Version of repository, default origin/master
+        type: string
+        required: false
+      repository:
+        description: >
+          Name of repository, should be describe as repositories for example in templates
+        type: string
+        required: true
+
+data_types:
+
+  sbrf.datatypes.Credential:
+    derived_from: tosca.datatypes.Root
+    description: >
+      The general credential type
+    properities:
+      storage:
+        type: string
+        default: erpm
+        required: true
+      user:
+        type: string
+        required: false
+      password:
+        type: string
+        required: false
+      key:
+        type: string
+        required: false
+      system_name:
+        type: string
+        required: false
+
+  sbrf.datatypes.interface:
+    derived_from: tosca.datatypes.Root
+    properties:
+      index:
+        type: integer
+        required: true
+      segment:
+        type: string
+        required: true
+      dns_domain:
+        type: string
+        required: true
+      backup:
+        type: boolean
+        required: true
+
+node_types:
+
+  sbrf.nodes.Root:
+    description: >
+      The TOSCA root node all other SBRF TOSCA base node types derive from
+    attributes:
+      tosca_id:
+        type: string
+      tosca_name:
+        type: string
+      state:
+        type: string
+    properties:
+      uuid:
+        description: >
+          Operation identifier
+        type: string
+        required: false
+    capabilities:
+      feature:
+        type: tosca.capabilities.Node
+    requirements:
+      - dependency:
+          capability: tosca.capabilities.Node
+          node: tosca.nodes.Root
+          relationship: tosca.relationships.DependsOn
+          occurrences: [ 0, UNBOUNDED ]
+    interfaces:
+      Standard:
+        type: sbrf.interfaces.node.lifecycle.Standard
+      Maintenance:
+        type: sbrf.interfaces.node.lifecycle.Maintenance
+      Update:
+        type: sbrf.interfaces.node.lifecycle.Update
+      Notify:
+        type: sbrf.interfaces.node.lifecycle.Notify
+      Handler:
+        type: sbrf.interfaces.node.lifecycle.Handler
+      Registry:
+        type: sbrf.interfaces.node.lifecycle.Registry
+
+  sbrf.nodes.services.hostname_service:
+    derived_from: sbrf.nodes.Root
+    properties:
+      environment:
+        type: string
+        required: true
+      as_name:
+        type: string
+        default: mvp
+        required: false
+      ci:
+        type: string
+        required: false
+      servers:
+        type: list
+        required: true
+      domain:
+        type: string
+        required: true
+    attributes:
+      hostnames:
+        type: list
+    requirements:
+      - hostname_service:
+          description: >
+            This requirement expresses the relationship between Hostname_service and Compute nodes.
+            Effectively it indicates that the Compute node dependence from Hostname_service
+          relationship: tosca.relationships.DependsOn
+          node: sbrf.nodes.Compute
+    interfaces:
+      Standard:
+        create:
+          implementation: python:tasks.plugins.python.hostname.hostname_plugin.ReserveHostname
+          serializer: tasks.plugins.python.hostname.hostname_serializer.HostnameSerializer
+          inputs: {}
+        delete:
+          implementation: python:tasks.plugins.python.hostname.hostname_plugin.FreeHostname
+          serializer: tasks.plugins.python.hostname.hostname_serializer.HostnameSerializer
+          inputs: {}
+
+  sbrf.nodes.Compute:
+    derived_from: sbrf.nodes.Root
+    description: >
+      Root compute type for SBRF type models
+    properties:
+      uuid:
+        description: >
+          Operation identifier
+        type: string
+        required: false
+      hostnames:
+        type: list
+        required: false
+      version_jdk:
+        type: enum
+        required: false
+    capabilities:
+      host:
+        type: tosca.capabilities.Container
+      binding:
+        type: tosca.capabilities.network.Bindable
+      os:
+        type: sbrf.capabilities.OperatingSystem
+      scalable:
+        type: sbrf.capabilities.Scalable
+      endpoint:
+        type: tosca.capabilities.Endpoint.Admin
+    attributes:
+      tosca_server_ip:
+        type: string
+      tosca_server_fqdn:
+        type: string
+      tosca_mac:
+        type: map
+        entry_schema:
+          type: string
+      tosca_server_uuid:
+        type: string
+      tosca_user_name:
+        type: string
+      tosca_password:
+        type: string
+      private_address:
+        type: string
+      public_address:
+        type: string
+      networks:
+        type: map
+        entry_schema:
+          type: tosca.datatypes.network.NetworkInfo
+      tosca_hash:
+        type: string
+    requirements:
+      - local_storage:
+          capability: tosca.capabilities.Attachment
+          node: tosca.nodes.BlockStorage
+          relationship: tosca.relationships.AttachesTo
+          occurrences: [0, UNBOUNDED]
+      - hostname_service:
+          node: sbrf.nodes.services.hostname_service
+          relationship: tosca.relationships.DependsOn
+    interfaces:
+      Maintenance:
+        start:
+          implementation: ansible:vm_power_state
+          serializer: tasks.plugins.python.power_management.power_management_serializer.PowerManagementSerializer
+          inputs: {}
+        stop:
+          implementation: ansible:vm_power_state
+          serializer: tasks.plugins.python.power_management.power_management_serializer.PowerManagementSerializer
+          inputs: {}
+        restart:
+          implementation: ansible:vm_power_state
+          serializer: tasks.plugins.python.power_management.power_management_serializer.PowerManagementSerializer
+          inputs: {}
+        resize:
+          implementation: ansible:vm_resize
+          serializer: tasks.plugins.python.resize.vm_resize_serializer.VMResizeSerializer
+        hash:
+          implementation: python:tasks.plugins.python.hash.server_hash_plugin.ServerHash
+          serializer: tasks.plugins.python.hash.server_hash_serializer.HashSerializer
+          inputs: {}
+

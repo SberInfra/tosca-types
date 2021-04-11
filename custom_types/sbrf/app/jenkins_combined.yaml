@@ -1,0 +1,88 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+
+
+
+description: >
+  Template for deploying a container in openshift
+
+
+
+
+node_types:
+
+  sbrf.nodes.SoftwareComponent.Jenkins_Combined:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      jenkins_type:
+        type: string
+        required: true
+      jenkins_user:
+        type: string
+        required: false
+        default: ""
+      jenkins_connect_string:
+        type: string
+        required: false
+        default: ""
+      master_uuid:
+        type: string
+        required: false
+      net_segment:
+        type: string
+        required: true
+      version:
+        type: string
+        required: true
+    attributes:
+      master_endpoint:
+        type: string
+    interfaces:
+      Standard:
+        create: jenkins_nutcracker
+
+  sbrf.nodes.SoftwareComponent.Jenkins_Slave.Windows:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      jenkins_type:
+        type: string
+        required: true
+      jenkins_user:
+        type: string
+        required: false
+        default: ""
+      jenkins_connect_string:
+        type: string
+        required: false
+        default: ""
+      master_uuid:
+        type: string
+        required: false
+      net_segment:
+        type: string
+        required: true
+      version:
+        type: string
+        required: true
+    attributes:
+      master_endpoint:
+        type: string
+    interfaces:
+      Standard:
+        create: jenkins_nutcracker_windows_slave
+
+
+  sbrf.nodes.SoftwareComponent.Jenkins_Combined.dzo:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      jenkins_user:
+        type: string
+        required: false
+        default: ""
+      jenkins_password:
+        type: string
+        required: false
+        default: ""
+    interfaces:
+      Standard:
+        create: jenkins_dzo

@@ -1,0 +1,119 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an appliance.
+
+
+node_types:
+
+  sbrf.nodes.Compute.VMWare.Appliance:
+    derived_from: sbrf.nodes.Compute.VMWare
+    interfaces:
+      Standard:
+        create: vmware
+        configure: appliance_setup
+        delete: vm_delete
+
+  sbrf.nodes.Compute.OpenStack.Appliance:
+    derived_from: sbrf.nodes.Compute.OpenStack
+    interfaces:
+      Standard:
+        create: openstack
+        configure: appliance_setup
+        delete: vm_delete
+
+  sbrf.nodes.Compute.VMWare.Appliance.DataPower:
+    derived_from: sbrf.nodes.Compute.VMWare
+    attributes:
+      tosca_dp_domain_name:
+        type: string
+    properties:
+      dp_domain:
+        type: string
+        required: true
+      monitor_user:
+        type: string
+        required: true
+    interfaces:
+      Standard:
+        create: vmware
+        delete: vm_delete
+
+  sbrf.nodes.Compute.OpenStack.ApplianceConfigured:
+    derived_from: sbrf.nodes.Compute.OpenStack
+    interfaces:
+      Standard:
+        create: openstack
+        delete: vm_delete
+
+  sbrf.nodes.Compute.OpenStack.ApplianceUnconfigured:
+    derived_from: sbrf.nodes.Compute.OpenStack
+    interfaces:
+      Standard:
+        create: openstack
+        delete: vm_delete
+
+  sbrf.nodes.Compute.VMWare.ApplianceConfigured:
+    derived_from: sbrf.nodes.Compute.VMWare
+    interfaces:
+      Standard:
+        create: vmware
+        delete: vm_delete
+
+  sbrf.nodes.Compute.vCloud.ApplianceConfigured:
+    derived_from: sbrf.nodes.Compute.vCloud
+    interfaces:
+      Standard:
+        create:
+          implementation: vcloud
+          inputs: {}
+        delete:
+          implementation: vm_delete
+          inputs:
+            vapp_name: { get_attribute: [SELF, tosca_vapp_name] }
+
+  sbrf.nodes.Compute.VMWare.ApplianceConfigured.AlteonOS:
+    derived_from: sbrf.nodes.Compute.VMWare.ApplianceConfigured
+    attributes:
+      tosca_server_mgmt_ip:
+        type: string
+      tosca_server_pip_ip:
+        type: string
+
+  sbrf.nodes.Compute.OpenStack.ApplianceConfigured.AlteonOS:
+    derived_from: sbrf.nodes.Compute.OpenStack.ApplianceConfigured
+    attributes:
+      balancer_id:
+        type: string
+    properties:
+      balancer_params:
+        type: json
+        required: true
+
+  sbrf.nodes.Compute.vCloud.ApplianceConfigured.AlteonOS:
+    derived_from: sbrf.nodes.Compute.vCloud.ApplianceConfigured
+    attributes:
+      tosca_server_mgmt_ip:
+        type: string
+      tosca_server_pip_ip:
+        type: string
+
+  sbrf.nodes.Compute.vCloud.ApplianceConfigured.AlteonOS_T1:
+    derived_from: sbrf.nodes.Compute.vCloud.ApplianceConfigured
+    attributes:
+      tosca_server_ip:
+        type: string
+      tosca_server_mgmt_ip:
+        type: string
+      tosca_server_pip_ip:
+        type: string
+
+  sbrf.nodes.Compute.vCloud.ApplianceConfigured.AlteonOS_T2:
+    derived_from: sbrf.nodes.Compute.vCloud.ApplianceConfigured
+    attributes:
+      tosca_server_ip:
+        type: string
+      tosca_server_mgmt_ip:
+        type: string
+      tosca_server_pip_ip:
+        type: string

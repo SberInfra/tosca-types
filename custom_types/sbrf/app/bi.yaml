@@ -1,0 +1,28 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  SberData BI types
+
+
+node_types:
+
+  sbrf.nodes.WebApplication.bi:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      ipaserver_ip_addresses:
+        type: string
+        required: true
+      ipaadmin_password:
+        type: string
+        required: true
+      ipaadmin_principal:
+        type: string
+        required: true
+    attributes:
+      output_tosca_BI_host:
+        type: string
+    interfaces:
+      Standard:
+        create:
+          implementation: bi/bi_install
+          inputs: {}

@@ -1,0 +1,92 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an LD3.0 with Hadoop.
+
+node_types:
+  sbrf.nodes.WebApplication.dl_cdh:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      flavor:
+        required: true
+        type: string
+      cluster_name:
+        required: true
+        type: string
+      user_login:
+        required: true
+        type: string
+      user_email:
+        required: true
+        type: string
+      spark2_version:
+        required: true
+        type: string
+      cluster_size:
+        required: true
+        type: string
+      repl_factor:
+        required: true
+        type: string
+      add_user:
+        required: true
+        type: string
+      custom_parcel_url:
+        required: true
+        type: string
+      volume_size:
+        required: true
+        type: string
+      fault_tolerance:
+        required: true
+        type: string
+      ctl_install:
+        required: true
+        type: string
+      graph_install:
+        required: true
+        type: string
+      matchbox_install:
+        required: true
+        type: string
+      impala_install:
+        required: true
+        type: string
+      cluster_type:
+        required: true
+        type: string
+      cluster_profile:
+        required: true
+        type: string
+      preemption_enable:
+        required: true
+        type: string
+      autokiller_enable:
+        required: true
+        type: string
+      parcel_set:
+        required: false
+        type: string
+      jh_node_count:
+        required: false
+        type: string
+    interfaces:
+      Standard:
+        create: dl_apps/dl_cdh
+        delete: dl_libs/dl_delete
+        start: dl_libs/dl_start
+        stop: dl_libs/dl_stop
+        
+
+  sbrf.nodes.WebApplication.dl_cdh_legacy:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      cluster_name:
+        required: true
+        type: string
+      flavor:
+        type: string
+        required: true
+    interfaces:
+      Standard:
+        create: dl_apps/dl_cdh_legacy

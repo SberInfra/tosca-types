@@ -1,0 +1,15 @@
+security_rules:
+  description: Правила межсетевого экрана
+  value: { get_attribute: [strongswan, security_rules] }
+new_security_group_name:
+  description: Имя группы безопасности сервера
+  value: { get_attribute: [strongswan, new_security_group_name] }
+connection_log:
+  description: Журнал подключения
+  value: { get_attribute: [strongswan, connection_log] }
+ping_log:
+  description: Журнал пинг
+  value: { get_attribute: [strongswan, ping_log] }
+traceroute_log:
+  description: Журнал traceroute
+  value: { get_attribute: [strongswan, traceroute_log] }

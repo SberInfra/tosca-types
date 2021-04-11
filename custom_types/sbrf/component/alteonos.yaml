@@ -1,0 +1,73 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an AlteonOS LoadBalancer with custom properties.
+
+node_types:
+  sbrf.nodes.SoftwareComponent.OpenstackAlteonOS:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      box_server_count:
+        required: true
+        type: integer
+      ports:
+        required: true
+        type: list
+      fault_tolerance:
+        type: string
+        required: true
+    interfaces:
+      Standard:
+        create: alteonos
+
+    attributes:
+      cluster_name:
+        description: LB cluster name
+      tosca_server_pip_ip:
+        description: Proxy IP
+      tosca_server_mgmt_ip:
+        description: Management IP
+      tosca_server_ip:
+        description: Data IP
+
+  sbrf.nodes.SoftwareComponent.VMwareAlteonOS:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      box_server_count:
+        required: true
+        type: integer
+      fault_tolerance:
+        type: string
+        required: true
+    interfaces:
+      Standard:
+        create: alteonos
+
+    attributes:
+      cluster_name:
+        description: LB cluster name
+      tosca_server_pip_ip:
+        description: Proxy IP
+      tosca_server_mgmt_ip:
+        description: Management IP
+
+  sbrf.nodes.SoftwareComponent.vCLoudAlteonOS:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      box_server_count:
+        required: true
+        type: integer
+      fault_tolerance:
+        type: string
+        required: true
+    interfaces:
+      Standard:
+        create: alteonos
+
+    attributes:
+      cluster_name:
+        description: LB cluster name
+      tosca_server_pip_ip:
+        description: Proxy IP
+      tosca_server_mgmt_ip:
+        description: Management IP

@@ -1,0 +1,146 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying a server with custom properties for image,
+  flavor and key_name.
+
+node_types:
+
+  sbrf.nodes.openstack.Port:
+    derived_from: sbrf.nodes.Root
+    properties:
+      networks:
+        type: list
+        required: true
+      auth_data:
+        type: sbrf.datatypes.auth_data
+        required: true
+      project_name:
+        type: string
+        required: true
+      region_name:
+        type: string
+        required: true
+      allowed_address_pairs:
+        type: list
+        required: false
+        default: []
+    attributes:
+      ports:
+        type: list
+    interfaces:
+      Standard:
+        create:
+          implementation: python:tasks.plugins.python.port.port_openstack.CreatePort
+          serializer: tasks.plugins.python.port.port_openstack_serializer.PortOpenStackSerializer
+          inputs: {}
+        delete:
+          implementation: python:tasks.plugins.python.port.port_openstack.FreePort
+          serializer: tasks.plugins.python.port.port_openstack_serializer.PortOpenStackSerializer
+          inputs: {}
+
+    requirements:
+      - binding:
+          description: >
+            Binding relationship between Port and Compute nodes.
+            Port will be attached to specific OpenStack Compute node instance
+          relationship: tosca.relationships.network.BindsTo
+          node: sbrf.nodes.Compute.OpenStackBase
+      - hostname_service:
+          node: sbrf.nodes.services.hostname_service
+          relationship: tosca.relationships.DependsOn
+
+
+  sbrf.nodes.Compute.OpenStackBase:
+    derived_from: sbrf.nodes.Compute
+    properties:
+      erpm_openstack_user:
+        type: string
+        required: true
+        default: openstack_user
+        constraints:
+        - valid_values: [openstack_user]
+      erpm_openstack_user_pass:
+        type: string
+        required: true
+        default: openstack_user_pass
+        constraints:
+        - valid_values: [openstack_user_pass]
+      flavor:
+        type: string
+        required: true
+      auth_type:
+        required: true
+        type: string
+        constraints:
+        - valid_values: [token, password]
+        default: token
+      auth:
+        required: true
+        type: map
+        entry_schema:
+          type: sbrf.datatypes.Compute.OpenStack.auth
+      key_name:
+        required: false
+        type: string
+      net_segment:
+        type: string
+        required: true
+        constraints:
+        - valid_values: [idz, ipz, edz, epz]
+      serial_number:
+        type: string
+        required: true
+      ports:
+        type: list
+        required: false
+    attributes:
+      server_security_groups:
+        type: list
+        entry_schema:
+          type: map
+    requirements:
+      - binding:
+          node: sbrf.nodes.openstack.Port
+          relationship: tosca.relationships.network.BindsTo
+      - hostname_service:
+          node: sbrf.nodes.services.hostname_service
+          relationship: tosca.relationships.DependsOn
+
+  sbrf.nodes.Compute.OpenStack:
+    derived_from: sbrf.nodes.Compute.OpenStackBase
+    properties:
+      volume_size:
+        required: false
+        type: integer
+
+  sbrf.nodes.Compute.OpenStackBareMetal:
+    derived_from: sbrf.nodes.Compute.OpenStackBase
+    properties:
+      raid_level:
+        type: string
+        required: true
+      use_dns:
+        type: string
+        required: true
+      combine_pvs:
+        type: string
+        required: true
+
+
+data_types:
+  sbrf.datatypes.Compute.OpenStack.auth:
+    derived_from: tosca.datatypes.Root
+    properties:
+      username:
+        type: string
+        required: false
+      password:
+        type: string
+        required: false
+      token:
+        type: string
+        required: false
+      project_name:
+        type: string
+        required: true

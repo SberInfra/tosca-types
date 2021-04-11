@@ -1,0 +1,53 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying ADG
+
+node_types:
+  sbrf.nodes.SoftwareComponent.ADG.observer:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      version:
+        required: true
+        type: version
+      sid:
+        required: true
+        type: string
+        constraints:
+          - pattern: ^[a-z]{1}[a-z0-9]{2,7}$
+    interfaces:
+      Standard:
+        create: adg_observer
+
+  sbrf.nodes.SoftwareComponent.ADG.primary:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      version:
+        required: true
+        type: version
+      sid:
+        required: true
+        type: string
+        constraints:
+          - pattern: ^[a-z]{1}[a-z0-9]{2,7}$
+    attributes:
+      adg_connect_string:
+        type: string
+    interfaces:
+      Standard:
+        create: adg_primary
+
+  sbrf.nodes.SoftwareComponent.ADG.standby:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      version:
+        required: true
+        type: version
+      sid:
+        required: true
+        type: string
+        constraints:
+          - pattern: ^[a-z]{1}[a-z0-9]{2,7}$
+    interfaces:
+      Standard:
+        create: adg_standby

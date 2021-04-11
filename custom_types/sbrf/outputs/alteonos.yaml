@@ -1,0 +1,9 @@
+server_ip:
+  description: IP адрес сервера
+  value: { get_attribute: [alteonos, tosca_server_ip] }
+vm_id:
+  description: Идентификатор сервера на платформе
+  value: { get_attribute: [alteonos, tosca_server_uuid] }
+balancer_id:
+  description: LoadBalancer ID
+  value: { get_attribute: [alteonos, balancer_id] }

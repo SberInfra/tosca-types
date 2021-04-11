@@ -1,0 +1,96 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying a server on vCloud platform
+
+node_types:
+
+  sbrf.nodes.Compute.vCloudBase:
+    derived_from: sbrf.nodes.Compute
+    properties:
+      storage_profile:
+        type: string
+        required: true
+      state:
+        type: string
+        required: true
+        default: poweredon
+      volume_size:
+        required: true
+        type: integer
+      net_segment:
+        type: string
+        required: true
+      joindomain:
+        type: string
+        required: true
+      serial_number:
+        type: string
+        required: true
+      flavor:
+        type: string
+        required: false
+        default: m1.tiny
+        constraints:
+    attributes:
+      tosca_vapp_name:
+        type: string
+    requirements:
+    - reserve_dns:
+        node: sbrf.nodes.vmware.service.reserve_dns
+        relationship: tosca.relationships.DependsOn
+
+  sbrf.nodes.Compute.vCloud:
+    derived_from: sbrf.nodes.Compute.vCloudBase
+    properties:
+      hardware:
+        required: true
+        type: map
+        entry_schema:
+          type: sbrf.datatypes.Compute.vCloud.hardware
+
+data_types:
+
+  sbrf.datatypes.Compute.vCloud.hardware:
+    derived_from: tosca.datatypes.Root
+    properties:
+      memory_mb:
+        type: integer
+        required: true
+      num_cpus:
+        type: integer
+        required: true
+
+  sbrf.datatypes.vCloud.interface:
+    derived_from: tosca.datatypes.Root
+    properties:
+      ip:
+        type: string
+        required: true
+      gateway:
+        type: string
+        required: true
+      hostname:
+        type: string
+        required: true
+      name:
+        type: string
+        required: true
+      vlan:
+        type: string
+        required: false
+      prefix:
+        type: string
+        required: true
+      netmask:
+        type: string
+        required: true
+      network:
+        type: string
+        required: true
+      dns_servers:
+        type: list
+        required: true
+      interface:
+        type: sbrf.datatypes.interface
+        required: true

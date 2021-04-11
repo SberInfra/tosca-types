@@ -1,0 +1,19 @@
+websphere_user:
+  description: Учетная запись администратора WAS
+  value: { get_attribute: [filenet, tosca_websphere_user] }
+websphere_password:
+  description: Пароль администратора WAS
+  value: { get_attribute: [filenet, tosca_websphere_pass] }
+  hidden: true
+  uitype: password
+was_user:
+  description: Учетная запись пользователя WAS
+  value: { get_attribute: [filenet, tosca_was_user] }
+was_password:
+  description: Пароль пользователя WAS
+  value: { get_attribute: [filenet, tosca_was_pass] }
+  hidden: true
+  uitype: password
+endpoint:
+  description: WAS DMGR URL
+  value: { get_attribute: [filenet, tosca_dmgr_url] }

@@ -1,0 +1,19 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an IBM BigFix License Metric Tool with
+  custom properties.
+
+node_types:
+
+  sbrf.nodes.WebApplication.ILMT:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      os_type_spo:
+        required: false
+        type: string
+        default: linux
+
+    interfaces:
+      Standard:
+        create: ilmt

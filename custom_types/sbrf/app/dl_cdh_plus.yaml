@@ -1,0 +1,36 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for adding new nodes in LD3.0 cluster
+
+node_types:
+  sbrf.nodes.WebApplication.dl_cdh_plus:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      flavor:
+        required: true
+        type: string
+      cluster_name:
+        required: true
+        type: string
+      user_login:
+        required: true
+        type: string
+      user_email:
+        required: true
+        type: string
+      volume_size:
+        required: true
+        type: string
+      fault_tolerance:
+        required: true
+        type: string
+      plus_node_count:
+        required: true
+        type: string
+    interfaces:
+      Standard:
+        create: dl_apps/dl_cdh_plus
+        delete: dl_libs/dl_delete_plus
+        start: dl_libs/dl_start
+        stop: dl_libs/dl_stop

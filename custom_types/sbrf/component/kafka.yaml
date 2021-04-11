@@ -1,0 +1,54 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an Kafka with custom properties
+
+node_types:
+  sbrf.nodes.SoftwareComponent.KafkaZookeeper:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      version:
+        required: true
+        type: version
+      jdk_version:
+        required: true
+        type: string
+      security:
+        required: true
+        type: string
+        default: PLAINTEXT__ZK_PLAIN_NO_AUTH__KAFKA_PLAINTEXT_NO_AUTH
+      fault_tolerance:
+        type: string
+        required: true
+        default: cluster
+      box_server_count:
+        type: integer
+        required: true
+        default: 3
+      add_node:
+        type: boolean
+        required: false
+        default: false
+    interfaces:
+      Standard:
+        create: kafka_zookeeper_config
+        configure: kafka_zookeeper
+
+  sbrf.nodes.SoftwareComponent.KafkaZookeeper.pass:
+    derived_from: tosca.nodes.SoftwareComponent
+    interfaces:
+      Standard:
+        create: kafka_zookeeper_pass
+
+  sbrf.nodes.SoftwareComponent.Kafka.dzo:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      kafka_version:
+        required: true
+        type: version
+      kafka_scala:
+        required: true
+        type: version
+    interfaces:
+      Standard:
+        create: kafka_dzo

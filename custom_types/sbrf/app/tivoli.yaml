@@ -1,0 +1,19 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an IBM Tivoli Agent with
+  custom properties.
+
+node_types:
+
+  sbrf.nodes.WebApplication.TIVOLI:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      os_type_spo:
+        required: false
+        type: string
+        default: linux
+
+    interfaces:
+      Standard:
+        create: tivoli

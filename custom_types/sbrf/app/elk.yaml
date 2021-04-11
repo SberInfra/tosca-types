@@ -1,0 +1,96 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an ELK stack with custom properties
+
+
+
+
+node_types:
+
+  sbrf.nodes.WebApplication.ELK:
+    derived_from: tosca.nodes.WebApplication
+    attributes:
+      elk_login:
+        type: string
+      elk_secret:
+        type: string
+    properties:
+      version:
+        required: true
+        type: string
+      java_version:
+        required: true
+        type: string
+      elk_set:
+        required: true
+        type: string
+    interfaces:
+      Standard:
+        create: elk
+
+  sbrf.nodes.WebApplication.ELKnew:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      version:
+        required: true
+        type: string
+      java_version:
+        required: true
+        type: string
+      elk_params:
+        required: true
+        type: json
+    interfaces:
+      Standard:
+        create: elk
+
+  sbrf.nodes.WebApplication.ELKoss:
+    derived_from: tosca.nodes.WebApplication
+    attributes:
+      elk_login:
+        description: Return user name for server
+      elk_secret:
+        description: Return password for server
+      tosca_spo_user:
+        description: Return SPO user name
+      tosca_spo_pass:
+        description: Return SPO password
+      tosca_kibana_url:
+        description: Return server ip addresses
+    properties:
+      fault_tolerance:
+        type: string
+        required: true
+      box_server_count:
+        required: false
+        type: integer
+      version:
+        required: true
+        type: string
+      java_version:
+        required: false
+        type: string
+      elk_set:
+        required: true
+        type: string
+      elk_type:
+        required: true
+        type: string
+      elk_start:
+        required: false
+        type: string
+    interfaces:
+      Standard:
+        create: elk_oss
+
+  sbrf.nodes.WebApplication.ELKossPass:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      force_change_password:
+        type: string
+        required: true
+        default: yes
+    interfaces:
+      Standard:
+        create: elk_oss_pass

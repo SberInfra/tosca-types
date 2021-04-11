@@ -1,0 +1,33 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an IBM Integration Bus with
+  custom properties.
+
+node_types:
+
+  sbrf.nodes.WebApplication.IBUS:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      version:
+        required: true
+        type: version
+        constraints:
+          - valid_values: [9.0.0, 10.0.0]
+      fix_pack:
+        required: true
+        type: integer
+      os_type_spo:
+        required: false
+        type: string
+        default: linux
+
+    interfaces:
+      Standard:
+        create: ibus_deploy
+
+    attributes:
+      tosca_ibus_user:
+        description: Return user name for server
+      tosca_ibus_pass:
+        description: Return password for server

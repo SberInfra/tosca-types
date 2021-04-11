@@ -1,0 +1,178 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying a server with custom properties.
+
+dsl_definitions:
+  windows_props: &windows_props
+    erpm_winrm_user:
+      type: string
+      required: true
+      default: winrm_user
+      constraints:
+      - valid_values: [winrm_user]
+    erpm_winrm_user_pass:
+      type: string
+      required: true
+      default: winrm_user_pass
+      constraints:
+      - valid_values: [winrm_user_pass]
+    erpm_temp_winrm_user:
+      type: string
+      required: true
+      default: temp_winrm_user
+      constraints:
+      - valid_values: [temp_winrm_user]
+    erpm_temp_winrm_user_pass:
+      type: string
+      required: true
+      default: temp_winrm_user_pass
+      constraints:
+      - valid_values: [temp_winrm_user_pass]
+    page_file_location:
+      type: string
+      required: false
+      default: "D"
+    joindomain:
+      type: string
+      required: true
+      constraints:
+      - valid_values: [ca.sbrf.ru, sigma.sbrf.ru]
+    volume_size:
+      required: false
+      type: integer
+      constraints:
+      - greater_or_equal: 100
+
+node_types:
+  sbrf.nodes.Compute.VMWare.Windows:
+    derived_from: sbrf.nodes.Compute.VMWare
+    properties: *windows_props
+    interfaces:
+      Standard:
+        create: vmware
+        configure: windows_setup
+        delete: vm_delete
+      Update:
+        update:
+          implementation: python:tasks.plugins.python.scorch.scorch_plugin.Scorch
+          serializer: tasks.plugins.python.scorch.scorch_serializer.ScorchSerializer
+          inputs: {}
+
+  sbrf.nodes.Compute.VMWare.Windows.PCH:
+    derived_from: sbrf.nodes.Compute.VMWare
+    properties: *windows_props
+    interfaces:
+      Standard:
+        create: vmware
+        configure: windows_setup
+        delete: vm_delete
+      Update:
+        update:
+          implementation: python:tasks.plugins.python.scorch.scorch_plugin.Scorch
+          serializer: tasks.plugins.python.scorch.scorch_serializer.ScorchSerializer
+          inputs: {}
+      Notify:
+        start_notify: loadrunner_pch_start_notify
+        stop_notify: loadrunner_pch_stop_notify
+
+  sbrf.nodes.Compute.vCloud.Windows:
+    derived_from: sbrf.nodes.Compute.vCloud
+    properties: *windows_props
+    interfaces:
+      Standard:
+        create:
+          implementation: vcloud
+          inputs: {}
+        configure:
+          implementation: windows_setup
+          inputs: {}
+        delete:
+          implementation: vm_delete
+          inputs:
+            vapp_name: { get_attribute: [SELF, tosca_vapp_name] }
+
+
+      Update:
+        update:
+          implementation: python:tasks.plugins.python.scorch.scorch_plugin.Scorch
+          serializer: tasks.plugins.python.scorch.scorch_serializer.ScorchSerializer
+          inputs: {}
+
+  sbrf.nodes.Compute.OpenStack.Windows:
+    derived_from: sbrf.nodes.Compute.OpenStack
+    properties: *windows_props
+    interfaces:
+      Standard:
+        create: openstack
+        configure: windows_setup
+        delete: vm_delete
+      Update:
+        update:
+          implementation: python:tasks.plugins.python.scorch.scorch_plugin.Scorch
+          serializer: tasks.plugins.python.scorch.scorch_serializer.ScorchSerializer
+          inputs: {}
+
+  sbrf.nodes.Compute.OpenStack.Windows.PCH:
+    derived_from: sbrf.nodes.Compute.OpenStack
+    properties: *windows_props
+    interfaces:
+      Standard:
+        create: openstack
+        configure: windows_setup
+        delete: vm_delete
+      Update:
+        update:
+          implementation: python:tasks.plugins.python.scorch.scorch_plugin.Scorch
+          serializer: tasks.plugins.python.scorch.scorch_serializer.ScorchSerializer
+          inputs: {}
+      Notify:
+        start_notify: loadrunner_pch_start_notify
+        stop_notify: loadrunner_pch_stop_notify
+
+  sbrf.nodes.Compute.OpenStack.WindowsConfigured:
+    derived_from: sbrf.nodes.Compute.OpenStack
+    properties:
+      volume_size:
+        required: false
+        type: integer
+        constraints:
+        - greater_or_equal: 100
+    interfaces:
+      Standard:
+        create: openstack
+        delete: vm_delete
+
+  sbrf.nodes.Compute.OpenStack.Windows.Desktop.RPA:
+    derived_from: sbrf.nodes.Compute.OpenStack
+    properties: *windows_props
+    interfaces:
+      Standard:
+        create: openstack
+        configure: windows_setup
+        delete: vm_delete
+
+  sbrf.nodes.vcf.Compute.vcfBase.Windows:
+    derived_from: sbrf.nodes.vcf.Compute.vcfBase
+    properties:
+      <<: *windows_props
+      vcf_os_tag:
+        type: string
+        required: false
+        default: windows
+        constraints:
+          - valid_values: [windows]
+    interfaces:
+      Standard:
+        create:
+          implementation: python:tasks.plugins.python.vcf_vm.vcf_vm_plugin.AddVMsToApplication
+          serializer: tasks.plugins.python.vcf_vm.vcf_vm_serializer.VCFVmSerializer
+        configure: windows_setup
+        delete:
+          implementation: python:tasks.plugins.python.vcf_vm.vcf_vm_plugin.DeleteVMsFromApplication
+          serializer: tasks.plugins.python.vcf_vm.vcf_vm_serializer.VCFVmSerializer
+      Update:
+        update:
+          implementation: python:tasks.plugins.python.scorch.scorch_plugin.Scorch
+          serializer: tasks.plugins.python.scorch.scorch_serializer.ScorchSerializer
+          inputs: {}

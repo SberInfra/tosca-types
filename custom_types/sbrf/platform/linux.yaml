@@ -1,0 +1,307 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying a server with custom properties.
+
+dsl_definitions:
+  linux_props: &linux_props
+    erpm_sudo_user:
+      type: string
+      required: true
+      default: sudo_user
+      constraints:
+      - valid_values: [sudo_user]
+    erpm_default_sudo_user_pass:
+      type: string
+      required: true
+      default: default_sudo_user_pass
+      constraints:
+      - valid_values: [default_sudo_user_pass]
+    erpm_sudo_user_pass:
+      type: string
+      required: true
+      default: sudo_user_pass
+      constraints:
+      - valid_values: [sudo_user_pass]
+
+node_types:
+  sbrf.nodes.Compute.VMWare.Linux:
+    derived_from: sbrf.nodes.Compute.VMWare
+    properties: *linux_props
+    attributes:
+      tosca_server_mgmt_ip:
+        type: string
+    interfaces:
+      Standard:
+        create: vmware
+        configure: linux_setup
+        delete: vm_delete
+      Update:
+        update:
+          implementation: python:tasks.plugins.python.linux_update.linux_update_plugin.LinuxUpdate
+          serializer: tasks.plugins.python.linux_update.linux_update_serializer.LinuxUpdateSerializer
+          inputs: {}
+
+  sbrf.nodes.Compute.vCloud.Linux:
+    derived_from: sbrf.nodes.Compute.vCloud
+    attributes:
+      tosca_server_mgmt_ip:
+        type: string
+    interfaces:
+      Standard:
+        create:
+          implementation: vcloud
+          inputs: {}
+        configure:
+          implementation: linux_setup
+          inputs: {}
+        delete:
+          implementation: vm_delete
+          inputs:
+            vapp_name: { get_attribute: [SELF, tosca_vapp_name] }
+      Update:
+        update:
+          implementation: python:tasks.plugins.python.linux_update.linux_update_plugin.LinuxUpdate
+          serializer: tasks.plugins.python.linux_update.linux_update_serializer.LinuxUpdateSerializer
+          inputs: {}
+
+  sbrf.nodes.Compute.OpenStack.Linux:
+    derived_from: sbrf.nodes.Compute.OpenStack
+    properties: *linux_props
+    interfaces:
+      Standard:
+        create:
+          implementation: openstack
+          inputs: {}
+        configure:
+          implementation: linux_setup
+          inputs: {}
+        delete:
+          implementation: vm_delete
+          inputs: {}
+      Update:
+        update:
+          implementation: python:tasks.plugins.python.linux_update.linux_update_plugin.LinuxUpdate
+          serializer: tasks.plugins.python.linux_update.linux_update_serializer.LinuxUpdateSerializer
+          inputs: {}
+
+  sbrf.nodes.Compute.OpenStack.LinuxPublic:
+    derived_from: sbrf.nodes.Compute.OpenStack
+    interfaces:
+      Standard:
+        create: openstack
+        delete: vm_delete
+
+  sbrf.nodes.Compute.OpenStack.LinuxJumpHost:
+    derived_from: sbrf.nodes.Compute.OpenStack
+    properties:
+      external_service_network_name:
+        type: string
+        required: true
+    attributes:
+      floating_ip:
+        type: string
+      floating_ip_id:
+        type: string
+      project_ssh_pub_key:
+        type: string
+    interfaces:
+      Standard:
+        create: openstack
+        configure: jumphost
+        delete: vm_delete
+
+  sbrf.nodes.Compute.OpenStack.LinuxCoreOS:
+    derived_from: sbrf.nodes.Compute.OpenStack
+    properties:
+      ignition_file_content:
+        type: string
+        required: true
+    interfaces:
+      Standard:
+        create: openstack
+        delete: vm_delete
+
+  sbrf.nodes.Compute.OpenStack.LinuxHAProxy:
+    derived_from: sbrf.nodes.Compute.OpenStack
+    properties:
+      erpm_sudo_user:
+        type: string
+        required: true
+        default: sudo_user
+        constraints:
+          - valid_values: [sudo_user]
+      erpm_default_sudo_user_pass:
+        type: string
+        required: true
+        default: default_sudo_user_pass
+        constraints:
+          - valid_values: [default_sudo_user_pass]
+      erpm_sudo_user_pass:
+        type: string
+        required: true
+        default: sudo_user_pass
+        constraints:
+          - valid_values: [sudo_user_pass]
+      version:
+        type: version
+        required: true
+        constraints:
+          - valid_values: ["1.8.8"]
+      haproxy_mode:
+        type: string
+        required: true
+        constraints:
+          - valid_values: [tcp, http]
+      haproxy_frontend_port:
+        type: integer
+        required: true
+      haproxy_balance_method:
+        type: string
+        required: true
+        constraints:
+          - valid_values: [roundrobin, leastconn, source]
+      haproxy_stick_session:
+        type: boolean
+        required: true
+      haproxy_backend_servers:
+        type: list
+        required: true
+        entry_schema:
+          type: string
+    interfaces:
+      Standard:
+        create: openstack
+        delete: vm_delete
+
+  sbrf.nodes.Compute.VMware.LinuxHAProxy:
+    derived_from: sbrf.nodes.Compute.VMware
+    properties:
+      erpm_sudo_user:
+        type: string
+        required: true
+        default: sudo_user
+        constraints:
+          - valid_values: [sudo_user]
+      erpm_default_sudo_user_pass:
+        type: string
+        required: true
+        default: default_sudo_user_pass
+        constraints:
+          - valid_values: [default_sudo_user_pass]
+      erpm_sudo_user_pass:
+        type: string
+        required: true
+        default: sudo_user_pass
+        constraints:
+          - valid_values: [sudo_user_pass]
+      joindomain:
+        type: string
+        required: true
+      version:
+        type: version
+        required: true
+        constraints:
+          - valid_values: ["1.8.8"]
+      haproxy_mode:
+        type: string
+        required: true
+        constraints:
+          - valid_values: [tcp, http]
+      haproxy_frontend_port:
+        type: integer
+        required: true
+      haproxy_balance_method:
+        type: string
+        required: true
+        constraints:
+          - valid_values: [roundrobin, leastconn, source]
+      haproxy_stick_session:
+        type: boolean
+        required: true
+      haproxy_backend_servers:
+        type: list
+        required: true
+        entry_schema:
+          type: string
+    interfaces:
+      Standard:
+        create: openstack
+        delete: vm_delete
+
+  sbrf.nodes.Compute.OpenStack.OCServ:
+    derived_from: sbrf.nodes.Compute.OpenStack
+    properties:
+      erpm_sudo_user:
+        type: string
+        required: true
+        default: sudo_user
+        constraints:
+          - valid_values: [sudo_user]
+      erpm_default_sudo_user_pass:
+        type: string
+        required: true
+        default: default_sudo_user_pass
+        constraints:
+          - valid_values: [default_sudo_user_pass]
+      erpm_sudo_user_pass:
+        type: string
+        required: true
+        default: sudo_user_pass
+        constraints:
+          - valid_values: [sudo_user_pass]
+      version:
+        type: version
+        required: true
+        constraints:
+          - valid_values: ["1.8.8"]
+      ocserv_session_count:
+        type: integer
+        required: false
+        default: 0
+      ocserv_user:
+        type: string
+        required: true
+      ocserv_password:
+        type: string
+        required: true
+    interfaces:
+      Standard:
+        create: openstack
+        delete: vm_delete
+
+
+  sbrf.nodes.Compute.OpenStackBareMetal.Linux:
+    derived_from: sbrf.nodes.Compute.OpenStackBareMetal
+    properties: *linux_props
+    interfaces:
+      Standard:
+        create: openstack
+        configure: linux_setup
+        delete: vm_delete
+      Update:
+        update:
+          implementation: python:tasks.plugins.python.linux_update.linux_update_plugin.LinuxUpdate
+          serializer: tasks.plugins.python.linux_update.linux_update_serializer.LinuxUpdateSerializer
+          inputs: {}
+
+
+  sbrf.nodes.vcf.Compute.vcfBase.Linux:
+    derived_from: sbrf.nodes.vcf.Compute.vcfBase
+    properties:
+      <<: *linux_props
+      vcf_os_tag:
+        type: string
+        required: false
+        default: Linux
+        constraints:
+          - valid_values: [Linux]
+    interfaces:
+      Standard:
+        create:
+          implementation: python:tasks.plugins.python.vcf_vm.vcf_vm_plugin.AddVMsToApplication
+          serializer: tasks.plugins.python.vcf_vm.vcf_vm_serializer.VCFVmSerializer
+        configure: linux_setup
+        delete:
+          implementation: python:tasks.plugins.python.vcf_vm.vcf_vm_plugin.DeleteVMsFromApplication
+          serializer: tasks.plugins.python.vcf_vm.vcf_vm_serializer.VCFVmSerializer

@@ -1,0 +1,72 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: Template for deploying SDP
+
+node_types:
+  sbrf.nodes.WebApplication.prepare_vms:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      flavor:
+        required: true
+        type: string
+      cluster_name:
+        required: true
+        type: string
+      volume_size:
+        required: true
+        type: integer
+      cluster_size:
+        required: true
+        type: string
+      fault_tolerance:
+        required: true
+        type: string
+    interfaces:
+      Standard:
+        create: sdp_3/create
+        delete: sdp_3/delete
+
+  sbrf.nodes.WebApplication.deploy_cluster:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      inventory_path:
+        type: string
+      cluster_name:
+        required: true
+        type: string
+      database_connection:
+        required: true
+        type: string
+      ambari_database_name:
+        required: true
+        type: string
+      ambari_database_user:
+        required: true
+        type: string
+      ambari_database_password:
+        required: true
+        type: string
+      hive_database_name:
+        required: true
+        type: string
+      hive_database_user:
+        required: true
+        type: string
+      hive_database_password:
+        required: true
+        type: string
+      oozie_database_name:
+        required: true
+        type: string
+      oozie_database_user:
+        required: true
+        type: string
+      oozie_database_password:
+        required: true
+        type: string
+      hosts:
+        type: list
+    interfaces:
+      Standard:
+        create: 
+          implementation: Ansible/playbooks/sdp_hadoop_baremetal/base_pdi_actions.yml

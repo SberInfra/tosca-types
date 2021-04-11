@@ -1,0 +1,60 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying Hyperledger Fabric.
+
+node_types:
+  sbrf.nodes.WebApplication.Hyperledger:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      organizations:
+        type: list
+        required: true
+      domain:
+        type: string
+        required: true
+      floating_ip:
+        type: string
+        required: true
+      ldap_type:
+        type: string
+        required: true
+      orderer_type:
+        type: string
+        required: true
+      deploy_version:
+        type: string
+        required: true
+      base_ldap_port_http:
+        type: integer
+        required: true
+      base_ldap_port_https:
+        type: integer
+        required: true
+      base_api_port:
+        type: integer
+        required: true
+      base_www_port:
+        type: integer
+        required: true
+      base_peer0_port:
+        type: integer
+        required: true
+    attributes:
+      ldap_username:
+        type: string
+      ldap_password:
+        type: string
+      security_rules:
+        type: list
+        entry_schema:
+          type: map
+      services_catalog:
+        type: list
+        entry_schema:
+          type: map
+      new_security_group_name:
+        type: string
+    interfaces:
+      Standard:
+        create: hyperledger_fabric_dzo

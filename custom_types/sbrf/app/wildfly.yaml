@@ -1,0 +1,54 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an WildFly Application Server
+  with custom properties
+
+
+
+
+node_types:
+
+  sbrf.nodes.WebApplication.WildFly:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      version:
+        required: true
+        type: string
+      jdk_version:
+        required: true
+        type: integer
+        constraints:
+          - valid_values: [6, 7, 8]
+      min_jdk_version:
+        required: true
+        type: integer
+    interfaces:
+      Standard:
+        create: wildfly
+
+  sbrf.nodes.WebApplication.WildFly.dzo:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      version:
+        required: true
+        type: string
+      jdk_version:
+        required: true
+        type: integer
+        constraints:
+          - valid_values: [6, 7, 8]
+      min_jdk_version:
+        required: true
+        type: integer
+      autostart:
+        required: true
+        type: string
+    attributes:
+      wf_admin_name:
+        type: string
+      wf_secret:
+        type: string
+    interfaces:
+      Standard:
+        create: wildfly_dzo

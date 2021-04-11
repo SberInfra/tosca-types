@@ -1,0 +1,50 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an Ignite SE.
+
+
+
+
+node_types:
+
+  sbrf.nodes.Database.IgniteSE:
+    derived_from: tosca.nodes.Database
+    attributes:
+      os_user_name:
+        type: string
+      os_user_pass:
+        type: string
+    properties:
+      fault_tolerance:
+        type: string
+        required: true
+      box_server_count:
+        required: false
+        type: integer
+      net_segment:
+        type: string
+        required: true
+      joindomain:
+        type: string
+        required: false
+      gg_client_password:
+        type: string
+        required: false
+      ise_email:
+        type: string
+        required: true
+    interfaces:
+      Standard:
+        create: ignite_se
+
+  sbrf.nodes.Database.IgniteSEpass:
+    derived_from: tosca.nodes.Database
+    properties:
+      force_change_password:
+        type: string
+        required: true
+        default: yes
+    interfaces:
+      Standard:
+        create: ignite_se_pass

@@ -1,0 +1,62 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an IBM WebSphere Application Server with
+  custom properties.
+
+
+
+
+node_types:
+
+  sbrf.nodes.WebApplication.WebSphere:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      version:
+        required: true
+        type: version
+        constraints:
+          - valid_values: [9.0.0, 8.5.5]
+      fix_pack:
+        required: true
+        type: string
+      jdk_version:
+        required: true
+        type: string
+      cell_type:
+        required: false
+        type: string
+        default: standalone
+      cluster_size:
+        required: false
+        type: string
+        default: all
+      os:
+        required: true
+        type: string
+        default: linux
+      security:
+        required: true
+        type: string
+        default: default
+      net_segment:
+        type: string
+        required: true
+      fault_tolerance:
+        type: string
+        required: true
+    interfaces:
+      Standard:
+        create: websphere
+
+    attributes:
+      tosca_wasadmin_user:
+        description: Return user name for server
+      tosca_wasadmin_pass:
+        description: Return password for server
+      tosca_was_user:
+        description: Return user name for server
+      tosca_was_pass:
+        description: Return password for server
+      tosca_dmgr_url:
+        description: Return server ip addresses

@@ -1,0 +1,51 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying an IBM FileNet.
+
+
+
+
+node_types:
+
+  sbrf.nodes.WebApplication.FileNet:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      version:
+        required: true
+        type: version
+        constraints:
+          - valid_values: [9.0.0]
+      fix_pack:
+        required: true
+        type: string
+      box_count:
+        required: false
+        type: integer
+      box_server_count:
+        required: false
+        type: integer
+      net_segment:
+        type: string
+        required: true
+      fault_tolerance:
+        type: string
+        required: true
+      joindomain:
+        type: string
+        required: false
+    interfaces:
+      Standard:
+        create: filenet
+
+    attributes:
+      tosca_websphere_user:
+        description: Return user name for server
+      tosca_websphere_pass:
+        description: Return password for server
+      tosca_was_user:
+        description: Return user name for server
+      tosca_was_pass:
+        description: Return password for server
+      tosca_dmgr_url:
+        description: Return server ip addresses

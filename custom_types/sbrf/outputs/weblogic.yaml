@@ -1,0 +1,19 @@
+os_user:
+  description: Учетная запись пользователя ОС
+  value: { get_attribute: [weblogic, tosca_os_user] }
+os_password:
+  description: Пароль пользователя ОС
+  value: { get_attribute: [weblogic, tosca_os_pass] }
+  hidden: true
+  uitype: password
+spo_user:
+  description: Учетная запись пользователя СПО
+  value: { get_attribute: [weblogic, tosca_spo_user] }
+spo_password:
+  description: Пароль пользователя СПО
+  value: { get_attribute: [weblogic, tosca_spo_pass] }
+  hidden: true
+  uitype: password
+endpoint:
+  description: WLS URL
+  value: { get_attribute: [weblogic, tosca_spo_url] }

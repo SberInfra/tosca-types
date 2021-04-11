@@ -1,0 +1,50 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+description: >
+  Template for deploying a strongSwan IPsec-based VPN solution with
+  custom properties.
+
+node_types:
+
+  sbrf.nodes.WebApplication.strongSwan:
+    derived_from: tosca.nodes.WebApplication
+    properties:
+      floating_ip:
+        type: string
+        required: true
+    attributes:
+      security_rules:
+        type: list
+        entry_schema:
+          type: map
+      new_security_group_name:
+        type: string
+      connection_log:
+        type: list
+        entry_schema:
+          type: string
+      ping_log:
+        type: list
+        entry_schema:
+          type: string
+      traceroute_log:
+        type: list
+        entry_schema:
+          type: string
+    interfaces:
+      Standard:
+        create: strongswan
+      Strongswan:
+        type: sbrf.interfaces.node.lifecycle.Strongswan
+        add_conn:
+          implementation: strongswan_management
+        remove_conn:
+          implementation: strongswan_management
+        update_conn:
+          implementation: strongswan_management
+        read_log:
+          implementation: strongswan_management
+        ping:
+          implementation: strongswan_management
+        traceroute:
+          implementation: strongswan_management

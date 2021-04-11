@@ -1,0 +1,8 @@
+os_user:
+  description: Учетная запись для доступа к серверу
+  value: { get_attribute: [elk, elk_login] }
+os_password:
+  description: Пароль для доступа к серверу
+  value: { get_attribute: [elk, elk_secret] }
+  hidden: True
+  uitype: password
